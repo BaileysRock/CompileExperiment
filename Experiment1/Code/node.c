@@ -42,7 +42,8 @@ void InsertNode(Node* parent,Node* child)
     else
     {
         Node* p = parent->childNode;
-        while(!p->brotherNode)
+        // while(!p->brotherNode)
+        while(p->brotherNode)
             p = p->brotherNode;
         p->brotherNode = child;        
     }
@@ -53,19 +54,23 @@ void InsertNode(Node* parent,Node* child)
 
 void DeleteTree(Node* root)
 {
-    if(!root)
+    if(root != NULL)
     {
         DeleteTree(root->childNode);
         DeleteTree(root->brotherNode);
-        free(root->name);
-        free(root->value);
+        // free(root->name);
+        // free(root->value);
+        // char* temp = root->value;
+        printf("%s",root->name);
         free(root);
+        // printf("%s",temp);
     }
 }
 
 // 打印树
 void PrintTree(Node* currentNode, int height)
 {
+    // printf("66");
     if (currentNode == NULL) {
         return;
     }
@@ -82,8 +87,8 @@ void PrintTree(Node* currentNode, int height)
         printf(": %lf", atof(currentNode->value));
     }
     printf("\n");
-    printTreeInfo(currentNode->childNode, height + 1);
-    printTreeInfo(currentNode->brotherNode, height);
+    PrintTree(currentNode->childNode, height + 1);
+    PrintTree(currentNode->brotherNode, height);
 }
 
 

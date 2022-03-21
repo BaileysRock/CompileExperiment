@@ -69,7 +69,6 @@
 #line 1 "syntax.y"
 
     #include <stdio.h>
-    #include <string.h>
     #include <stdlib.h>
     #include "node.h"
     #include "lex.yy.c"
@@ -79,7 +78,7 @@
     Node* CreateNode(int lineNoTemp, NodeType nodeTypeTemp, char*nameTemp, char*tokenTemp);
     void InsertNode(Node* parent,Node* child);
 
-#line 83 "syntax.tab.c"
+#line 82 "syntax.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -162,11 +161,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "syntax.y"
+#line 12 "syntax.y"
 
     struct treeNode* node; 
 
-#line 170 "syntax.tab.c"
+#line 169 "syntax.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -561,12 +560,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    89,    89,    91,    92,    94,    95,    96,    98,    99,
-     103,   104,   106,   107,   109,   110,   112,   116,   117,   119,
-     120,   122,   123,   125,   129,   131,   132,   134,   135,   136,
-     137,   138,   139,   143,   144,   146,   148,   149,   151,   152,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   175,   176
+       0,    88,    88,    90,    91,    93,    94,    95,    97,    98,
+     102,   103,   105,   106,   108,   109,   111,   115,   116,   118,
+     119,   121,   122,   124,   128,   130,   131,   133,   134,   135,
+     136,   137,   138,   142,   143,   145,   147,   148,   150,   151,
+     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   174,   175
 };
 #endif
 
@@ -1543,355 +1542,355 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 89 "syntax.y"
+#line 88 "syntax.y"
                       { p = CreateNode((yyloc).first_line, NON_TOKEN, "Program", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; root = p; }
-#line 1549 "syntax.tab.c"
+#line 1548 "syntax.tab.c"
     break;
 
   case 3:
-#line 91 "syntax.y"
+#line 90 "syntax.y"
                               { p = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDefList", NULL);  InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1555 "syntax.tab.c"
+#line 1554 "syntax.tab.c"
     break;
 
   case 4:
-#line 92 "syntax.y"
+#line 91 "syntax.y"
       { (yyval.node) = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDefList", NULL); }
-#line 1561 "syntax.tab.c"
+#line 1560 "syntax.tab.c"
     break;
 
   case 5:
-#line 94 "syntax.y"
+#line 93 "syntax.y"
                                   { p = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDef", NULL);  InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1567 "syntax.tab.c"
+#line 1566 "syntax.tab.c"
     break;
 
   case 6:
-#line 95 "syntax.y"
+#line 94 "syntax.y"
                      { p = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDef", NULL);  InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1573 "syntax.tab.c"
+#line 1572 "syntax.tab.c"
     break;
 
   case 7:
-#line 96 "syntax.y"
+#line 95 "syntax.y"
                               { p = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDef", NULL);  InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1579 "syntax.tab.c"
+#line 1578 "syntax.tab.c"
     break;
 
   case 8:
-#line 98 "syntax.y"
+#line 97 "syntax.y"
                    { p = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDecList", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1585 "syntax.tab.c"
+#line 1584 "syntax.tab.c"
     break;
 
   case 9:
-#line 99 "syntax.y"
+#line 98 "syntax.y"
                               { p = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDecList", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1591 "syntax.tab.c"
+#line 1590 "syntax.tab.c"
     break;
 
   case 10:
-#line 103 "syntax.y"
+#line 102 "syntax.y"
                  { p = CreateNode((yyloc).first_line, NON_TOKEN, "Specifier", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1597 "syntax.tab.c"
+#line 1596 "syntax.tab.c"
     break;
 
   case 11:
-#line 104 "syntax.y"
+#line 103 "syntax.y"
                       { p = CreateNode((yyloc).first_line, NON_TOKEN, "Specifier", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1603 "syntax.tab.c"
+#line 1602 "syntax.tab.c"
     break;
 
   case 12:
-#line 106 "syntax.y"
+#line 105 "syntax.y"
                                               { p = CreateNode((yyloc).first_line, NON_TOKEN, "StructSpecifier", NULL);  InsertNode(p, (yyvsp[-4].node)); InsertNode(p, (yyvsp[-3].node));InsertNode(p, (yyvsp[-2].node));InsertNode(p, (yyvsp[-1].node));InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1609 "syntax.tab.c"
+#line 1608 "syntax.tab.c"
     break;
 
   case 13:
-#line 107 "syntax.y"
+#line 106 "syntax.y"
                  { p = CreateNode((yyloc).first_line, NON_TOKEN, "StructSpecifier", NULL);  InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1615 "syntax.tab.c"
+#line 1614 "syntax.tab.c"
     break;
 
   case 14:
-#line 109 "syntax.y"
+#line 108 "syntax.y"
            { p = CreateNode((yyloc).first_line, NON_TOKEN, "OptTag", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1621 "syntax.tab.c"
+#line 1620 "syntax.tab.c"
     break;
 
   case 15:
-#line 110 "syntax.y"
+#line 109 "syntax.y"
       { (yyval.node) = CreateNode((yyloc).first_line, NON_TOKEN, "OptTag", NULL); }
-#line 1627 "syntax.tab.c"
+#line 1626 "syntax.tab.c"
     break;
 
   case 16:
-#line 112 "syntax.y"
+#line 111 "syntax.y"
         { p = CreateNode((yyloc).first_line, NON_TOKEN, "Tag", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1633 "syntax.tab.c"
+#line 1632 "syntax.tab.c"
     break;
 
   case 17:
-#line 116 "syntax.y"
+#line 115 "syntax.y"
            { p = CreateNode((yyloc).first_line, NON_TOKEN, "VarDec", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1639 "syntax.tab.c"
+#line 1638 "syntax.tab.c"
     break;
 
   case 18:
-#line 117 "syntax.y"
+#line 116 "syntax.y"
                        { p = CreateNode((yyloc).first_line, NON_TOKEN, "VarDec", NULL);  InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1645 "syntax.tab.c"
+#line 1644 "syntax.tab.c"
     break;
 
   case 19:
-#line 119 "syntax.y"
+#line 118 "syntax.y"
                          { p = CreateNode((yyloc).first_line, NON_TOKEN, "FunDec", NULL);  InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1651 "syntax.tab.c"
+#line 1650 "syntax.tab.c"
     break;
 
   case 20:
-#line 120 "syntax.y"
+#line 119 "syntax.y"
                { p = CreateNode((yyloc).first_line, NON_TOKEN, "FunDec", NULL);  InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1657 "syntax.tab.c"
+#line 1656 "syntax.tab.c"
     break;
 
   case 21:
-#line 122 "syntax.y"
+#line 121 "syntax.y"
                                 { p = CreateNode((yyloc).first_line, NON_TOKEN, "VarList", NULL);  InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1663 "syntax.tab.c"
+#line 1662 "syntax.tab.c"
     break;
 
   case 22:
-#line 123 "syntax.y"
+#line 122 "syntax.y"
                { p = CreateNode((yyloc).first_line, NON_TOKEN, "VarList", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1669 "syntax.tab.c"
+#line 1668 "syntax.tab.c"
     break;
 
   case 23:
-#line 125 "syntax.y"
+#line 124 "syntax.y"
                            { p = CreateNode((yyloc).first_line, NON_TOKEN, "ParamDec", NULL);  InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1675 "syntax.tab.c"
+#line 1674 "syntax.tab.c"
     break;
 
   case 24:
-#line 129 "syntax.y"
+#line 128 "syntax.y"
                                { p = CreateNode((yyloc).first_line, NON_TOKEN, "CompSt", NULL);  InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1681 "syntax.tab.c"
+#line 1680 "syntax.tab.c"
     break;
 
   case 25:
-#line 131 "syntax.y"
+#line 130 "syntax.y"
                         { p = CreateNode((yyloc).first_line, NON_TOKEN, "StmtList", NULL);  InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1687 "syntax.tab.c"
+#line 1686 "syntax.tab.c"
     break;
 
   case 26:
-#line 132 "syntax.y"
+#line 131 "syntax.y"
       { (yyval.node) = CreateNode((yyloc).first_line, NON_TOKEN, "StmtList", NULL); }
-#line 1693 "syntax.tab.c"
+#line 1692 "syntax.tab.c"
     break;
 
   case 27:
-#line 134 "syntax.y"
+#line 133 "syntax.y"
                { p = CreateNode((yyloc).first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1699 "syntax.tab.c"
+#line 1698 "syntax.tab.c"
     break;
 
   case 28:
-#line 135 "syntax.y"
+#line 134 "syntax.y"
              { p = CreateNode((yyloc).first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1705 "syntax.tab.c"
+#line 1704 "syntax.tab.c"
     break;
 
   case 29:
-#line 136 "syntax.y"
+#line 135 "syntax.y"
                       { p = CreateNode((yyloc).first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1711 "syntax.tab.c"
+#line 1710 "syntax.tab.c"
     break;
 
   case 30:
-#line 137 "syntax.y"
+#line 136 "syntax.y"
                         { p = CreateNode((yyloc).first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, (yyvsp[-4].node)); InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1717 "syntax.tab.c"
+#line 1716 "syntax.tab.c"
     break;
 
   case 31:
-#line 138 "syntax.y"
+#line 137 "syntax.y"
                                   { p = CreateNode((yyloc).first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, (yyvsp[-6].node)); InsertNode(p, (yyvsp[-5].node)); InsertNode(p, (yyvsp[-4].node)); InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1723 "syntax.tab.c"
+#line 1722 "syntax.tab.c"
     break;
 
   case 32:
-#line 139 "syntax.y"
+#line 138 "syntax.y"
                            { p = CreateNode((yyloc).first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, (yyvsp[-4].node)); InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1729 "syntax.tab.c"
+#line 1728 "syntax.tab.c"
     break;
 
   case 33:
-#line 143 "syntax.y"
+#line 142 "syntax.y"
                      { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1735 "syntax.tab.c"
+#line 1734 "syntax.tab.c"
     break;
 
   case 34:
-#line 144 "syntax.y"
+#line 143 "syntax.y"
       { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL);}
-#line 1741 "syntax.tab.c"
+#line 1740 "syntax.tab.c"
     break;
 
   case 35:
-#line 146 "syntax.y"
+#line 145 "syntax.y"
                             { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1747 "syntax.tab.c"
+#line 1746 "syntax.tab.c"
     break;
 
   case 36:
-#line 148 "syntax.y"
+#line 147 "syntax.y"
              { p = CreateNode((yyloc).first_line, NON_TOKEN, "DecList", NULL); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1753 "syntax.tab.c"
+#line 1752 "syntax.tab.c"
     break;
 
   case 37:
-#line 149 "syntax.y"
+#line 148 "syntax.y"
                         { p = CreateNode((yyloc).first_line, NON_TOKEN, "DecList", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1759 "syntax.tab.c"
+#line 1758 "syntax.tab.c"
     break;
 
   case 38:
-#line 151 "syntax.y"
+#line 150 "syntax.y"
             { p = CreateNode((yyloc).first_line, NON_TOKEN, "Dec", NULL); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1765 "syntax.tab.c"
+#line 1764 "syntax.tab.c"
     break;
 
   case 39:
-#line 152 "syntax.y"
+#line 151 "syntax.y"
                           { p = CreateNode((yyloc).first_line, NON_TOKEN, "Dec", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1771 "syntax.tab.c"
+#line 1770 "syntax.tab.c"
     break;
 
   case 40:
-#line 156 "syntax.y"
+#line 155 "syntax.y"
                       { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1777 "syntax.tab.c"
+#line 1776 "syntax.tab.c"
     break;
 
   case 41:
-#line 157 "syntax.y"
+#line 156 "syntax.y"
                   { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1783 "syntax.tab.c"
+#line 1782 "syntax.tab.c"
     break;
 
   case 42:
-#line 158 "syntax.y"
+#line 157 "syntax.y"
                  { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1789 "syntax.tab.c"
+#line 1788 "syntax.tab.c"
     break;
 
   case 43:
-#line 159 "syntax.y"
+#line 158 "syntax.y"
                     { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1795 "syntax.tab.c"
+#line 1794 "syntax.tab.c"
     break;
 
   case 44:
-#line 160 "syntax.y"
+#line 159 "syntax.y"
                    { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1801 "syntax.tab.c"
+#line 1800 "syntax.tab.c"
     break;
 
   case 45:
-#line 161 "syntax.y"
+#line 160 "syntax.y"
                     { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1807 "syntax.tab.c"
+#line 1806 "syntax.tab.c"
     break;
 
   case 46:
-#line 162 "syntax.y"
+#line 161 "syntax.y"
                    { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1813 "syntax.tab.c"
+#line 1812 "syntax.tab.c"
     break;
 
   case 47:
-#line 163 "syntax.y"
+#line 162 "syntax.y"
                   { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1819 "syntax.tab.c"
+#line 1818 "syntax.tab.c"
     break;
 
   case 48:
-#line 164 "syntax.y"
+#line 163 "syntax.y"
                 { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1825 "syntax.tab.c"
+#line 1824 "syntax.tab.c"
     break;
 
   case 49:
-#line 165 "syntax.y"
+#line 164 "syntax.y"
                 { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1831 "syntax.tab.c"
+#line 1830 "syntax.tab.c"
     break;
 
   case 50:
-#line 166 "syntax.y"
+#line 165 "syntax.y"
               { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1837 "syntax.tab.c"
+#line 1836 "syntax.tab.c"
     break;
 
   case 51:
-#line 167 "syntax.y"
+#line 166 "syntax.y"
                     { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1843 "syntax.tab.c"
+#line 1842 "syntax.tab.c"
     break;
 
   case 52:
-#line 168 "syntax.y"
+#line 167 "syntax.y"
                { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1849 "syntax.tab.c"
+#line 1848 "syntax.tab.c"
     break;
 
   case 53:
-#line 169 "syntax.y"
+#line 168 "syntax.y"
                     { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-3].node)); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1855 "syntax.tab.c"
+#line 1854 "syntax.tab.c"
     break;
 
   case 54:
-#line 170 "syntax.y"
+#line 169 "syntax.y"
                  { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1861 "syntax.tab.c"
+#line 1860 "syntax.tab.c"
     break;
 
   case 55:
-#line 171 "syntax.y"
+#line 170 "syntax.y"
          { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); (yyval.node) = p; }
-#line 1867 "syntax.tab.c"
+#line 1866 "syntax.tab.c"
     break;
 
   case 56:
-#line 172 "syntax.y"
+#line 171 "syntax.y"
           { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); (yyval.node) = p; }
-#line 1873 "syntax.tab.c"
+#line 1872 "syntax.tab.c"
     break;
 
   case 57:
-#line 173 "syntax.y"
+#line 172 "syntax.y"
             { p = CreateNode((yyloc).first_line, NON_TOKEN, "Exp", NULL); (yyval.node) = p; }
-#line 1879 "syntax.tab.c"
+#line 1878 "syntax.tab.c"
     break;
 
   case 58:
-#line 175 "syntax.y"
+#line 174 "syntax.y"
                      { p = CreateNode((yyloc).first_line, NON_TOKEN, "Args", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1885 "syntax.tab.c"
+#line 1884 "syntax.tab.c"
     break;
 
   case 59:
-#line 176 "syntax.y"
+#line 175 "syntax.y"
           { p = CreateNode((yyloc).first_line, NON_TOKEN, "Args", NULL); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
-#line 1891 "syntax.tab.c"
+#line 1890 "syntax.tab.c"
     break;
 
 
-#line 1895 "syntax.tab.c"
+#line 1894 "syntax.tab.c"
 
       default: break;
     }
@@ -2129,7 +2128,11 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 180 "syntax.y"
+#line 179 "syntax.y"
 
 
 
+
+yyerror(char* msg){
+    fprintf(stderr, "Error type B at line %d: %s.\n", yylineno, msg);
+}

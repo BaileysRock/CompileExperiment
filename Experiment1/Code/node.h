@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // node的类型
 typedef enum nodeType{
     TOKEN_INT,
@@ -19,7 +20,7 @@ typedef struct treeNode{
     // 词法单位的类型
     NodeType nodeType;
     // 词法单位的名称
-    char* name ;
+    char* name;
     // 词法单位若为终结符则保存他的内容
     char* value;
     // 非终结符的孩子节点

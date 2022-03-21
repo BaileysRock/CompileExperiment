@@ -1,6 +1,5 @@
 %{
     #include <stdio.h>
-    #include <string.h>
     #include <stdlib.h>
     #include "node.h"
     #include "lex.yy.c"
@@ -180,3 +179,7 @@ Args: Exp COMMA Args { p = CreateNode(@$.first_line, NON_TOKEN, "Args", NULL); I
 %%
 
 
+
+yyerror(char* msg){
+    fprintf(stderr, "Error type B at line %d: %s.\n", yylineno, msg);
+}

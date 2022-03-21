@@ -1,6 +1,5 @@
 
-compile:lexical.l
+all:lexical.l
 	bison -d syntax.y
 	flex lexical.l
-	gcc lex.yy.c main.c -o lex -lfl
-	./lex test.c
+	gcc -g main.c node.c syntax.tab.c -o scanner -lfl

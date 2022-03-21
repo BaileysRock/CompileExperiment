@@ -912,7 +912,7 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "lexical.l"
-#line 3 "lexical.l"
+#line 4 "lexical.l"
     #include "node.h"
     #include "syntax.tab.h"
 
@@ -1151,7 +1151,7 @@ YY_DECL
 		}
 
 	{
-#line 61 "lexical.l"
+#line 62 "lexical.l"
 
 #line 1157 "lex.yy.c"
 
@@ -1222,147 +1222,147 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 62 "lexical.l"
+#line 63 "lexical.l"
 {;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 63 "lexical.l"
+#line 64 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "IF", yytext); return IF; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 64 "lexical.l"
+#line 65 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "ELSE", yytext); return ELSE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 65 "lexical.l"
+#line 66 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "WHILE", yytext); return WHILE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 66 "lexical.l"
+#line 67 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "STRUCT", yytext); return STRUCT; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 67 "lexical.l"
+#line 68 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "RETURN", yytext); return RETURN; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 68 "lexical.l"
+#line 69 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "RELOP", yytext); return RELOP; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 70 "lexical.l"
+#line 71 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "PLUS", yytext); return PLUS; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 71 "lexical.l"
+#line 72 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "MINUS", yytext); return MINUS; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 72 "lexical.l"
+#line 73 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "STAR", yytext); return STAR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 73 "lexical.l"
+#line 74 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "DIV", yytext); return DIV; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 74 "lexical.l"
+#line 75 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "AND", yytext); return AND; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 75 "lexical.l"
+#line 76 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "OR", yytext); return OR; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 76 "lexical.l"
+#line 77 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "NOT", yytext); return NOT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "lexical.l"
+#line 79 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "SEMI", yytext); return SEMI; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 79 "lexical.l"
+#line 80 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "COMMA", yytext); return COMMA; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 80 "lexical.l"
+#line 81 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "ASSIGNOP", yytext); return ASSIGNOP; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 81 "lexical.l"
+#line 82 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "DOT", yytext); return DOT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 83 "lexical.l"
+#line 84 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "LP", yytext); return LP; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 84 "lexical.l"
+#line 85 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "RP", yytext); return RP; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 85 "lexical.l"
+#line 86 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "LB", yytext); return LB; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 86 "lexical.l"
+#line 87 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "RB", yytext); return RB; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 87 "lexical.l"
+#line 88 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "LC", yytext); return LC; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 88 "lexical.l"
+#line 89 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "RC", yytext); return RC; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 90 "lexical.l"
+#line 91 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_TYPE, "TYPE", yytext); return TYPE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 91 "lexical.l"
+#line 92 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_ID, "ID", yytext); return ID; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 92 "lexical.l"
+#line 93 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_INT, "INT", yytext); return INT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 93 "lexical.l"
+#line 94 "lexical.l"
 { yylval.node = CreateNode(yylineno, TOKEN_FLOAT, "FLOAT", yytext); return FLOAT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 96 "lexical.l"
+#line 97 "lexical.l"
 ECHO;
 	YY_BREAK
 #line 1369 "lex.yy.c"
@@ -2382,7 +2382,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 96 "lexical.l"
+#line 97 "lexical.l"
 
 
 

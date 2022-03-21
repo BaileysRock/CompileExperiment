@@ -1,4 +1,5 @@
 %option yylineno
+
 %{
     #include "node.h"
     #include "syntax.tab.h"

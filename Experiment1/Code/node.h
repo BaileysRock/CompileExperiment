@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// 定义词法、语法错误
+#define BOOL int
+#define TRUE 1
+#define FALSE 0
+
 // node的类型
 typedef enum nodeType{
     TOKEN_INT,

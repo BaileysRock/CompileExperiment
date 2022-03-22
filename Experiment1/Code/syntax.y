@@ -3,11 +3,13 @@
     #include <stdlib.h>
     #include "node.h"
     #include "lex.yy.c"
-    extern int syntaxError;
+    extern BOOL synError;
     Node* root;
     Node* p;
     Node* CreateNode(int lineNoTemp, NodeType nodeTypeTemp, char*nameTemp, char*tokenTemp);
     void InsertNode(Node* parent,Node* child);
+    int yylex(void);
+    int yyerror(char* s);
 %}
 %union{
     struct treeNode* node; 
@@ -114,9 +116,11 @@ Tag: ID { p = CreateNode(@$.first_line, NON_TOKEN, "Tag", NULL);  InsertNode(p, 
 
 VarDec: ID { p = CreateNode(@$.first_line, NON_TOKEN, "VarDec", NULL);  InsertNode(p, $1); $$ = p; }
     | VarDec LB INT RB { p = CreateNode(@$.first_line, NON_TOKEN, "VarDec", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); $$ = p; }
+    | error RB { synError = TRUE; }
     ;
 FunDec: ID LP VarList RP { p = CreateNode(@$.first_line, NON_TOKEN, "FunDec", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); $$ = p; }
     | ID LP RP { p = CreateNode(@$.first_line, NON_TOKEN, "FunDec", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
+
     ;
 VarList: ParamDec COMMA VarList { p = CreateNode(@$.first_line, NON_TOKEN, "VarList", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
     | ParamDec { p = CreateNode(@$.first_line, NON_TOKEN, "VarList", NULL);  InsertNode(p, $1); $$ = p; }
@@ -136,6 +140,7 @@ Stmt: Exp SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  Insert
     | IF LP Exp RP Stmt { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); InsertNode(p, $5); $$ = p; }
     | IF LP Exp RP Stmt ELSE Stmt { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); InsertNode(p, $5); InsertNode(p, $6); InsertNode(p, $7); $$ = p; }
     | WHILE LP Exp RP Stmt { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); InsertNode(p, $5); $$ = p; }
+    | error SEMI {synError = TRUE;}
     ;
 
 
@@ -167,9 +172,9 @@ Exp: Exp ASSIGNOP Exp { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); I
     | ID LP RP { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
     | Exp LB Exp RB { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); $$ = p; }
     | Exp DOT ID { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
-    | ID { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); $$ = p; }
-    | INT { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); $$ = p; }
-    | FLOAT { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); $$ = p; }
+    | ID { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, $1); $$ = p; }
+    | INT { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, $1); $$ = p; }
+    | FLOAT { p = CreateNode(@$.first_line, NON_TOKEN, "Exp", NULL); InsertNode(p, $1); $$ = p; }
     ;
 Args: Exp COMMA Args { p = CreateNode(@$.first_line, NON_TOKEN, "Args", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
     | Exp { p = CreateNode(@$.first_line, NON_TOKEN, "Args", NULL); InsertNode(p, $1); $$ = p; }
@@ -178,8 +183,6 @@ Args: Exp COMMA Args { p = CreateNode(@$.first_line, NON_TOKEN, "Args", NULL); I
 
 %%
 
-
-
-yyerror(char* msg){
-    fprintf(stderr, "Error type B at line %d: %s.\n", yylineno, msg);
+int yyerror(char* s){
+    fprintf(stderr, "%s type B at line %d near %s\n", s, yylineno,yytext);
 }

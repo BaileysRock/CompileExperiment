@@ -26,7 +26,7 @@ Node* CreateNode(int lineNoTemp, NodeType nodeTypeTemp, char*nameTemp, char*toke
     newNode->nodeType = nodeTypeTemp;
     strncpy(name, nameTemp, nameLength);
     newNode->name = name;
-    if(tokenTemp)
+    if(tokenTemp != NULL)
         strncpy(value, tokenTemp, tokenLength);
     newNode->value = value;
     return newNode;
@@ -67,10 +67,12 @@ void DeleteTree(Node* root)
 
 // 打印树
 void PrintTree(Node* currentNode, int height)
-{
+{ 
     if (currentNode == NULL) {
-        return;
+        return; 
     }
+    if (height == 0)
+        printf("\n");
     for (int i = 0; i < height; i++) {
         printf("  ");
     }

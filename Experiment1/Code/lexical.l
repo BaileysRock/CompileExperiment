@@ -1,19 +1,15 @@
 %option yylineno
-
 %{
     #include "node.h"
     #include "syntax.tab.h"
-
-    extern unsigned lexError;
-    int lines = 0;
+    extern BOOL lexError;
     int yycolumn = 1;
-
     #define YY_USER_ACTION \
-        yylloc.first_line=yylloc.last_line=yylineno; \
-        yylloc.first_column=yycolumn; \
-        yylloc.last_column=yycolumn+yyleng-1; \
-        yycolumn+=yyleng;
-%}
+    yylloc.first_line=yylloc.last_line=yylineno; \
+    yylloc.first_column=yycolumn; \
+    yylloc.last_column=yycolumn+yyleng-1; \
+    yycolumn+=yyleng;
+%}      
 
 
 digit [0-9]
@@ -25,10 +21,9 @@ Decimal [-+]?(0|[1-9][0-9]*)
 Octal [-+]?0(0|[0-7]*)
 /* 十六进制 */
 Hexadecimal [-+]?(0x|0X)[0-9a-fA-F]+
-/* INT [{Decimal}{Octal}{Hexadecimal}] */
-INT 0|[1-9]+[0-9]*
+INT ([-+]?(0|[1-9][0-9]*)|[-+]?0(0|[0-7]*)|[-+]?(0x|0X)[0-9a-fA-F]+)
 /* 由数字和一个小数点组成的数,小数点至少被一个数字围绕 */
-FLOAT ([-+]?([0-9]*\.?[0-9]+|[0-9]+\.)|[-+]?[0-9]*\.[0-9]+[eE][+-]?[0-9]+)
+FLOAT ([-+]?((0|[1-9][0-9]*)\.[0-9]+|[0-9]+\.)|[-+]?(0|[1-9][0-9]*)\.[0-9]+[eE][+-]?[0-9]+)
 /* 一个由52个大写字母或小写字母、10个数字和一个下划线字符组成的字符串,不能以字符串开头 */
 ID [_a-zA-Z]+[_a-zA-Z0-9]{0,31}
 /* 其他符号 */
@@ -59,8 +54,10 @@ IF if
 ELSE else
 WHILE while
 
+SPACEWORD " "|\t|\n|\f|\v|\r\n
+
 %%
-\t+ {;}
+{SPACEWORD} {;}
 {IF} { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "IF", yytext); return IF; }
 {ELSE} { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "ELSE", yytext); return ELSE; }
 {WHILE} { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "WHILE", yytext); return WHILE; }
@@ -88,10 +85,13 @@ WHILE while
 {LC} { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "LC", yytext); return LC; }
 {RC} { yylval.node = CreateNode(yylineno, TOKEN_OTHER, "RC", yytext); return RC; }
 
+{INT} { yylval.node = CreateNode(yylineno, TOKEN_INT, "INT", yytext); return INT; }
 {TYPE} { yylval.node = CreateNode(yylineno, TOKEN_TYPE, "TYPE", yytext); return TYPE; }
 {ID} { yylval.node = CreateNode(yylineno, TOKEN_ID, "ID", yytext); return ID; }
-{INT} { yylval.node = CreateNode(yylineno, TOKEN_INT, "INT", yytext); return INT; }
 {FLOAT} { yylval.node = CreateNode(yylineno, TOKEN_FLOAT, "FLOAT", yytext); return FLOAT; }
+
+
+. { lexError = TRUE; printf("Error type A at Line %d: Mysterious character \'%s\'.\n", yylineno, yytext); }
 
 
 %%

@@ -22,9 +22,7 @@ int main(int argc, char** argv) {
 
     yyrestart(f);
     yyparse();
-    
     PrintTree(root, 0);
-    
     DeleteTree(root);
     return 0;
 }

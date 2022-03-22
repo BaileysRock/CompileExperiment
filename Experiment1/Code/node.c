@@ -50,8 +50,6 @@ void InsertNode(Node* parent,Node* child)
 }
 
 // 删除语法树
-
-
 void DeleteTree(Node* root)
 {
     if(root != NULL)
@@ -61,8 +59,9 @@ void DeleteTree(Node* root)
         // free(root->name);
         // free(root->value);
         // char* temp = root->value;
-        printf("%s",root->name);
-        free(root);
+        // printf("%s",root->name);
+        // free(root);
+        root = NULL;
         // printf("%s",temp);
     }
 }

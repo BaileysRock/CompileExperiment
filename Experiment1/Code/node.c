@@ -35,7 +35,7 @@ Node* CreateNode(int lineNoTemp, NodeType nodeTypeTemp, char*nameTemp, char*toke
 // 插入子节点
 void InsertNode(Node* parent,Node* child)
 {
-    if (!parent->childNode)
+    if (parent->childNode == NULL)
     {
         parent->childNode = child;
     }
@@ -43,7 +43,7 @@ void InsertNode(Node* parent,Node* child)
     {
         Node* p = parent->childNode;
         // while(!p->brotherNode)
-        while(p->brotherNode)
+        while(p->brotherNode != NULL)
             p = p->brotherNode;
         p->brotherNode = child;        
     }
@@ -56,20 +56,18 @@ void DeleteTree(Node* root)
     {
         DeleteTree(root->childNode);
         DeleteTree(root->brotherNode);
+        // 这个地方free之后不知道为什么会报重复free
+        // 因此改为指向NULL
         // free(root->name);
         // free(root->value);
-        // char* temp = root->value;
-        // printf("%s",root->name);
         // free(root);
         root = NULL;
-        // printf("%s",temp);
     }
 }
 
 // 打印树
 void PrintTree(Node* currentNode, int height)
 {
-    // printf("66");
     if (currentNode == NULL) {
         return;
     }
@@ -79,8 +77,7 @@ void PrintTree(Node* currentNode, int height)
     printf("%s", currentNode->name);
     if (currentNode->nodeType == NON_TOKEN) {
         printf(" (%d)", currentNode->lineNo);
-    } else if (currentNode->nodeType == TOKEN_TYPE || currentNode->nodeType == TOKEN_ID ||
-               currentNode->nodeType == TOKEN_INT) {
+    } else if (currentNode->nodeType == TOKEN_TYPE || currentNode->nodeType == TOKEN_ID || currentNode->nodeType == TOKEN_INT) {
         printf(": %s", currentNode->value);
     } else if (currentNode->nodeType == TOKEN_FLOAT) {
         printf(": %lf", atof(currentNode->value));

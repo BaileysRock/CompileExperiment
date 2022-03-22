@@ -1555,7 +1555,7 @@ yyreduce:
 
   case 4:
 #line 91 "syntax.y"
-      { (yyval.node) = CreateNode((yyloc).first_line, NON_TOKEN, "ExtDefList", NULL); }
+      {(yyval.node) = NULL;}
 #line 1560 "syntax.tab.c"
     break;
 
@@ -1621,7 +1621,7 @@ yyreduce:
 
   case 15:
 #line 109 "syntax.y"
-      { (yyval.node) = CreateNode((yyloc).first_line, NON_TOKEN, "OptTag", NULL); }
+      {(yyval.node) = NULL;}
 #line 1626 "syntax.tab.c"
     break;
 
@@ -1687,7 +1687,7 @@ yyreduce:
 
   case 26:
 #line 131 "syntax.y"
-      { (yyval.node) = CreateNode((yyloc).first_line, NON_TOKEN, "StmtList", NULL); }
+      {(yyval.node) = NULL;}
 #line 1692 "syntax.tab.c"
     break;
 
@@ -1729,19 +1729,19 @@ yyreduce:
 
   case 33:
 #line 142 "syntax.y"
-                     { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
+                       { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
 #line 1734 "syntax.tab.c"
     break;
 
   case 34:
 #line 143 "syntax.y"
-      { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL);}
+      {(yyval.node) = NULL;}
 #line 1740 "syntax.tab.c"
     break;
 
   case 35:
 #line 145 "syntax.y"
-                            { p = CreateNode((yyloc).first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
+                            { p = CreateNode((yyloc).first_line, NON_TOKEN, "Def", NULL); InsertNode(p, (yyvsp[-2].node)); InsertNode(p, (yyvsp[-1].node)); InsertNode(p, (yyvsp[0].node)); (yyval.node) = p; }
 #line 1746 "syntax.tab.c"
     break;
 

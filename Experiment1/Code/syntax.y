@@ -88,7 +88,7 @@
 Program:   ExtDefList { p = CreateNode(@$.first_line, NON_TOKEN, "Program", NULL);  InsertNode(p, $1); $$ = p; root = p; }
     ;
 ExtDefList: ExtDef ExtDefList { p = CreateNode(@$.first_line, NON_TOKEN, "ExtDefList", NULL);  InsertNode(p, $1); InsertNode(p, $2); $$ = p; } 
-    | { $$ = CreateNode(@$.first_line, NON_TOKEN, "ExtDefList", NULL); }
+    | {$$ = NULL;}
     ;
 ExtDef: Specifier ExtDecList SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "ExtDef", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
     | Specifier SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "ExtDef", NULL);  InsertNode(p, $1); InsertNode(p, $2); $$ = p; }
@@ -106,7 +106,7 @@ StructSpecifier: STRUCT OptTag LC DefList RC  { p = CreateNode(@$.first_line, NO
     | STRUCT Tag { p = CreateNode(@$.first_line, NON_TOKEN, "StructSpecifier", NULL);  InsertNode(p, $1); InsertNode(p, $2); $$ = p; }
     ;
 OptTag: ID { p = CreateNode(@$.first_line, NON_TOKEN, "OptTag", NULL);  InsertNode(p, $1); $$ = p; }
-    | { $$ = CreateNode(@$.first_line, NON_TOKEN, "OptTag", NULL); }
+    | {$$ = NULL;}
     ;
 Tag: ID { p = CreateNode(@$.first_line, NON_TOKEN, "Tag", NULL);  InsertNode(p, $1); $$ = p; }
     ; 
@@ -128,7 +128,7 @@ ParamDec: Specifier VarDec { p = CreateNode(@$.first_line, NON_TOKEN, "ParamDec"
 CompSt: LC DefList StmtList RC { p = CreateNode(@$.first_line, NON_TOKEN, "CompSt", NULL);  InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); InsertNode(p, $4); $$ = p; }
     ;
 StmtList: Stmt StmtList { p = CreateNode(@$.first_line, NON_TOKEN, "StmtList", NULL);  InsertNode(p, $1); InsertNode(p, $2); $$ = p; }
-    | { $$ = CreateNode(@$.first_line, NON_TOKEN, "StmtList", NULL); }
+    | {$$ = NULL;}
     ;
 Stmt: Exp SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, $1); InsertNode(p, $2); $$ = p; }
     | CompSt { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  InsertNode(p, $1); $$ = p; }
@@ -139,10 +139,10 @@ Stmt: Exp SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "Stmt", NULL);  Insert
     ;
 
 
-DefList: Def DefList { p = CreateNode(@$.first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, $1); InsertNode(p, $2); $$ = p; }
-    | { p = CreateNode(@$.first_line, NON_TOKEN, "DefList", NULL);}
+DefList:  Def DefList  { p = CreateNode(@$.first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, $1); InsertNode(p, $2); $$ = p; }
+    | {$$ = NULL;}
     ;
-Def: Specifier DecList SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "DefList", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
+Def: Specifier DecList SEMI { p = CreateNode(@$.first_line, NON_TOKEN, "Def", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }
     ;
 DecList: Dec { p = CreateNode(@$.first_line, NON_TOKEN, "DecList", NULL); InsertNode(p, $1); $$ = p; }
     | Dec COMMA DecList { p = CreateNode(@$.first_line, NON_TOKEN, "DecList", NULL); InsertNode(p, $1); InsertNode(p, $2); InsertNode(p, $3); $$ = p; }

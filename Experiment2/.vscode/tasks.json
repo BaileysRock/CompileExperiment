@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "make compile",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "make nessaryTest",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ]
+}

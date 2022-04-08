@@ -1,0 +1,139 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{dirtree}
+\usepackage{listings}
+\linespread{1}%修改行距
+\title{编译原理实验一：词法分析与语法分析} 
+\author{1190200708 熊峰} 
+\date{\today}
+\begin{document} 
+\maketitle 
+
+\section{程序的功能及实现} 
+\subsection{程序的功能}
+使用flex和bison实现C--语言的词法和语法分析，构造分析树并能够在发现词法错误和语法错误时给出提示。\par
+\subsection{程序的实现}
+
+所设置的节点的结构体如下：\par
+\lstset{language=C}
+    \begin{lstlisting}
+        typedef struct treeNode{
+            // 词法单位的行
+            int lineNo;
+            // 词法单位的类型
+            NodeType nodeType;
+            // 词法单位的名称
+            char* name;
+            // 词法单位若为终结符则保存他的内容
+            char* value;
+            // 非终结符的孩子节点
+            struct treeNode* childNode;
+            // 非终结符的下一个兄弟节点
+            struct treeNode* brotherNode;
+        }Node;
+    \end{lstlisting} 
+\subsubsection{节点相关操作}
+    \begin{itemize}
+        \item [1)]
+        创建节点，并根据value的值区分是否为终结符。\par
+    
+        \item [2)]
+        插入节点，首先检查父节点是否存在子节点，若不存在子节点，则将第二个参数的节点插入为父节点的子节点，若其存在
+        子节点，则找到父节点的子节点，并不断指向兄弟节点，直到其为空，将第二个参数的节点插入为最后一个兄弟节点的兄弟节点。\par
+    
+        \item [3)]
+        删除语法树，释放内存。\par
+        \item [4)]
+        根据层数打印语法树，确定节点类型，只有为TOKEN\_INT,TOKEN\_\par
+        FLOAT,TOKEN\_ID,TOKEN\_TYPE,的时候才会打印他的值。
+    
+    \end{itemize}
+\subsubsection{词法分析}
+\begin{itemize}
+    \item [1)]
+    根据书后产生式，书写正则表达式，并使用别名命名，方便进一步的正则表达式的识别与匹配。\par
+
+    \item [2)]
+    完成正则表达式匹配后的动作，即需要建立叶子节点。\par
+
+    \item [3)]
+    根据示例中的错误进一步完善词法分析的功能，识别出更多的词法错误。\par
+
+\end{itemize}
+\subsubsection{语法分析}
+\begin{itemize}
+    \item [1)]
+    首先在定义部分定义终结符与非终结符，并设置左右优先级。\par
+
+    \item [2)]
+    在规则段根据书后相关产生式书写相关规则，并根据规则中使用的符号构建语法树。\par
+    若产生式为
+    ExtDefList -> ExtDef ExtDefList\par
+    则需要创建ExtDefList的节点，并将\$1插入到ExtDefList的子节点中，接下来将\$2插入\$1的兄弟节点。
+    \item [3)]
+    在第三段中，声明了错误恢复的方法，由于yacc的错误恢复的特性，实现的方法可以指出语法错误的位置及原因。\par
+\end{itemize}
+
+
+\subsection{优点}
+\subsubsection{语法树的构建}
+通过先构建父节点再构建叶节点的方式，使整体脉络更加清晰。如代码所示:\par
+\lstset{language=C}
+\begin{lstlisting}
+    p = CreateNode(@$.first_line, NON_TOKEN, "ExtDefList", NULL);  
+    InsertNode(p, $1); 
+    InsertNode(p, $2); 
+    $$ = p;
+\end{lstlisting} 
+\subsubsection{打印语法分析树}
+引入枚举类型，为每一个节点分配类型，最终打印语法树时候，可以判断他的类型，只有在int、float、type、id时候才会打印。
+\subsubsection{增强词法分析}
+根据书后示例，进一步完善了词法分析过程，使程序能够识别十六进制及八进制的词法错误。
+
+
+
+\section{如何编译程序}
+
+
+
+实验的根目录下有makefile文件。\par
+实验的内容的目录结构如下：
+\dirtree{%
+    .1 {Experiment1}.
+    .2 {Code}.
+    .3 {lexical.l}.
+    .3 {syntax.y}.
+    .3 {main.c}.
+    .3 {makefile}.
+    .3 {node.c}.
+    .3 {node.h}.
+    .2 {TestCase}.
+    .3 {test1.cmm}.
+    .3 {test2.cmm}.
+    .3 {test3.cmm}.
+    .2 {makefile}.
+}
+其中在Experiment根目录下的./makefile会与./Code/makefile嵌套调用。\par
+本次实验中，所有指令在根目录执行即可，指令如下:\par
+\begin{itemize}
+    \item [1)] 
+    编译./Code下的所有代码，并生成可执行文件./Code/parser.
+    \lstset{language=bash}
+    \begin{lstlisting}
+        $make compile
+    \end{lstlisting} 
+    \item [2)] 
+    清除./Code下所有编译产物。
+    \lstset{language=bash}
+    \begin{lstlisting}
+        $make clean
+    \end{lstlisting} 
+    \item [3)] 
+    测试示例。
+    \lstset{language=bash}
+    \begin{lstlisting}
+        $make nessaryTest
+    \end{lstlisting} 
+\end{itemize}
+位于实验目录的根目录执行编译和测试命令，即可完成测试。
+
+\end{document}

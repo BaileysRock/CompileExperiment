@@ -5,8 +5,8 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/Code/Parser",
-            "args": ["test.cmm"],
+            "program": "${workspaceFolder}/Code/parser",
+            "args": ["${workspaceFolder}/TestCase/test1.cmm"],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "build"
         }

@@ -1,3 +1,6 @@
+# ifndef SEMANTICANALYSIS_H
+# define SEMANTICANALYSIS_H
+
 # include "node.h"
 
 // 定义hashmap的大小
@@ -7,19 +10,40 @@ typedef struct Type_* Type;
 
 typedef struct FieldList_* FieldList;
 
+typedef enum TypeKind{
+    BASIC,
+    ARRAY,
+    STRUCTURE,
+    FUNCTION
+}Kind;
+typedef enum BasicType{
+    INT_TYPE,
+    FLOAT_TYPE
+}basicType;
+
+
 // Type_数据类型
 struct Type_
 {
-    enum { BASIC, ARRAY, STRUCTURE} kind;
+    Kind kind;
     union
     {
         // 基本类型
-        int basic;
+        basicType basic;
         struct {
             Type elem;
             int size;
         } array;
-        FieldList structure;
+        struct {
+            char* structName;
+            FieldList field;
+        } structure;
+
+        struct {
+            int argc;          // argument counter
+            FieldList argv;   // argument vector
+            Type returnType;  // returnType
+        } function;
     } u;
 };
 
@@ -40,6 +64,10 @@ unsigned int hash_pjw(char* name);
 // 遍历整棵树
 void Traversal(Node* pNode);
 
+// 报错信息
+void Error();
+
+void ExtDef(Node* pNode);
 
 
-
+# endif

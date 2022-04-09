@@ -1,172 +1,183 @@
-#ifndef SEMANTIC_H
-#define SEMENTIC_H
-
-#define HASH_TABLE_SIZE 0x3fff
-#define STACK_DEEP
-
 #include "node.h"
+#include <assert.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-typedef struct type* pType;
-typedef struct fieldList* pFieldList;
-typedef struct tableItem* pItem;
-typedef struct hashTable* pHash;
-typedef struct stack* pStack;
-typedef struct table* pTable;
+/// 符号表
+struct sym_table* table;
 
-typedef struct type {
-    Kind kind;
+/// 标识符类型
+enum kind {
+    BASIC,     // 基本类型: int/float
+    ARRAY,     // 数组类型
+    STRUCTURE, // 结构体类型
+    FUNCTION   // 函数类型
+};
+
+/// 标识符类型为 BASIC 时，更加具体的类型
+enum basic_type {
+    INT_TYPE,  // int
+    FLOAT_TYPE // float
+};
+
+/// 语义分析错误类型
+enum error_type {
+    UNDEFINE_VAR = 1,     // 变量未定义
+    UNDEFINE_FUNC,        // 函数未定义
+    REDEFINE_VAR,         // 变量重复定义
+    REDEFINE_FUNC,        // 函数重复定义
+    TYPE_MISMATCH_ASSIGN, // 类型不匹配的赋值
+    LEFT_VAR_ASSIGN,      // 非法左值
+    TYPE_MISMATCH_OP,     // 操作数类型不匹配
+    TYPE_MISMATCH_RETURN, // 返回类型不匹配
+    FUNC_AGRC_MISMATCH,   // 函数参数数量不正确
+    NOT_A_ARRAY,          // 变量不是一个数组
+    NOT_A_FUNC,           // 变量不是一个函数
+    NOT_A_INT,            // 变量不是一个 int
+    ILLEGAL_USE_DOT,      // 对非结构体变量使用 "." 运算符
+    NONEXISTFIELD,        // 结构体没有对应的域
+    REDEFINE_FEILD,       // 结构体中的域重复定义
+    DUPLICATED_NAME,      // 结构体命名重复
+    UNDEFINE_STRUCT       // 结构体未定义
+};
+
+/// 类型
+struct type {
+    // 标识符类型
+    enum kind kind;
+
+    // 具体的类型由 kind 字段指示
     union {
         // 基本类型
-        BasicType basic;
-        // 数组类型信息包括元素类型与数组大小构成
+        enum basic_type basic;
+
+        // 数组类型
         struct {
-            pType elem;
-            int size;
+            struct type* element_type; // 元素类型
+            int          size;         // 数组大小
         } array;
-        // 结构体类型信息是一个链表
+
+        // 结构体类型
         struct {
-            char* structName;
-            pFieldList field;
+            char*         value;  // 结构体名
+            struct field* field; // 结构体各个字段链表
         } structure;
 
+        // 函数类型
         struct {
-            int argc;          // argument counter
-            pFieldList argv;   // argument vector
-            pType returnType;  // returnType
+            int           argc;        // 参数数量
+            struct field* argv;        // 参数链表
+            struct type*  return_type; // 返回类型
         } function;
     } u;
-} Type;
+};
 
-typedef struct fieldList {
-    char* name;       // 域的名字
-    pType type;       // 域的类型
-    pFieldList tail;  // 下一个域
-} FieldList;
+/// 域：带有自己的名字和类型的“类型”
+struct field {
+    char*         value; // 名字
+    struct type*  type; // 类型
+    struct field* next; // 下一个域
+};
 
-typedef struct tableItem {
-    int symbolDepth;
-    pFieldList field;
-    pItem nextSymbol;  // same depth next symbol, linked from stack
-    pItem nextHash;    // same hash code next symbol, linked from hash table
-} TableItem;
+/// 符号表项目
+struct table_item {
+    struct field*      field; // 符号域（类型）信息
+    struct table_item* next;  // 相同哈希值的下一个项目
+};
 
-typedef struct hashTable {
-    pItem* hashArray;
-} HashTable;
+/// 符号表条目总数
+#define SYM_TABLE_SIZE 0x3fff
 
-typedef struct stack {
-    pItem* stackArray;
-    int curStackDepth;
-} Stack;
+/// 符号表，本质上是一个哈希表，用于根据符号名称快速找到对应的符号表条目
+struct sym_table {
+    /// 一个符号表条目 item 在表中的索引位置的计算方法是：
+    /// hash_array[HASH(`name`)] -> `name` 对应的符号表条目
+    struct table_item** hash_array;
+};
 
-typedef struct table {
-    pHash hash;
-    pStack stack;
-    int unNamedStructNum;
-    // int enterStructLayer;
-} Table;
+/// 拷贝字符串 \p src
+char* copy_str(char* src);
 
-extern pTable table;
+/// 打印错误信息
+void print_error(enum error_type type, int line, char* msg);
 
-// Type functions
-pType newType(Kind kind, ...);
-pType copyType(pType src);
-void deleteType(pType type);
-boolean checkType(pType type1, pType type2);
-void printType(pType type);
+/// 打印类型
+void print_kind(struct type* type);
 
-// FieldList functions
+/// 递归进行语义分析
+void Traversal(Node* node);
 
-// inline pFieldList newFieldList() {
-//     pFieldList p = (pFieldList)malloc(sizeof(FieldList));
-//     p->name = NULL;
-//     p->type = NULL;
-//     p->tail = NULL;
-//     return p;
-// }
+/// 根据标识符种类 \p kind 和其余参数新建一个新类型
+struct type* new_type(enum kind kind, ...);
 
-pFieldList newFieldList(char* newName, pType newType);
-pFieldList copyFieldList(pFieldList src);
-void deleteFieldList(pFieldList fieldList);
-void setFieldListName(pFieldList p, char* newName);
-void printFieldList(pFieldList fieldList);
+/// 拷贝类型 \p src
+struct type* copy_type(struct type* src);
 
-// tableItem functions
+/// 检查两个类型 \p type1 和 \p type2 是否相同
+///
+/// BASIC: 检查是否同为 int 或 float
+/// ARRAY: 检查元素的类型
+/// STRUCTURE: 检查结构体名称
+/// FUNCTION: 规定函数一定不同
+///
+/// 相同则返回 1；否则返回 0
+int is_type_same(struct type* type1, struct type* type2);
 
-// inline pItem newItem() {
-//     pItem p = (pItem)malloc(sizeof(TableItem));
-//     p->symbolDepth = 0;
-//     p->field = NULL;
-//     p->nextHash = NULL;
-//     p->nextSymbol = NULL;
-//     return p;
-// }
+/// 根据名称 \p name 和类型 \p type 新建一个域
+struct field* new_field(char* name, struct type* type);
 
-pItem newItem(int symbolDepth, pFieldList pfield);
-void deleteItem(pItem item);
-boolean isStructDef(pItem src);
+/// 拷贝域 \p src
+struct field* copy_field(struct field* src);
 
-// Hash functions
-pHash newHash();
-void deleteHash(pHash hash);
-pItem getHashHead(pHash hash, int index);
-void setHashHead(pHash hash, int index, pItem newVal);
+/// 设置域 \p field 的名称字段为 \p name
+void set_field_name(struct field* field, char* name);
 
-// Stack functions
-pStack newStack();
-void deleteStack(pStack stack);
-void addStackDepth(pStack stack);
-void minusStackDepth(pStack stack);
-pItem getCurDepthStackHead(pStack stack);
-void setCurDepthStackHead(pStack stack, pItem newVal);
+/// 根据域 \p field 创建一个新符号表条目
+struct table_item* new_table_item(struct field* field);
 
-// Table functions
-pTable initTable();
-void deleteTable(pTable table);
-pItem searchTableItem(pTable table, char* name);
-boolean checkTableItemConflict(pTable table, pItem item);
-void addTableItem(pTable table, pItem item);
-void deleteTableItem(pTable table, pItem item);
-void clearCurDepthStackList(pTable table);
-// void addStructLayer(pTable table);
-// void minusStructLayer(pTable table);
-// boolean isInStructLayer(pTable table);
-void printTable(pTable table);
+/// 判断符号表条目 \p item 是否是结构体
+/// 如果是，则返回 1；否则返回 0
+int is_struct(struct table_item* item);
 
-// Global functions
-static inline unsigned int getHashCode(char* name) {
-    unsigned int val = 0, i;
-    for (; *name; ++name) {
-        val = (val << 2) + *name;
-        if (i = val & ~HASH_TABLE_SIZE)
-            val = (val ^ (i >> 12)) & HASH_TABLE_SIZE;
-    }
-    return val;
-}
+/// 初始化符号表
+struct sym_table* init_table();
 
-static inline void pError(ErrorType type, int line, char* msg) {
-    printf("Error type %d at Line %d: %s\n", type, line, msg);
-}
+/// 计算字符串 \p str 的哈希值
+unsigned get_hash_code(char* str);
 
-void traverseTree(pNode node);
+/// 从符号表 \p table 中查找名称为 \p name 的符号条目指针。
+///
+/// 若找不到，则返回 NULL
+struct table_item* get_table_item(struct sym_table* table, char* name);
 
-// Generate symbol table functions
-void ExtDef(pNode node);
-void ExtDecList(pNode node, pType specifier);
-pType Specifier(pNode node);
-pType StructSpecifier(pNode node);
-pItem VarDec(pNode node, pType specifier);
-void FunDec(pNode node, pType returnType);
-void VarList(pNode node, pItem func);
-pFieldList ParamDec(pNode node);
-void CompSt(pNode node, pType returnType);
-void StmtList(pNode node, pType returnType);
-void Stmt(pNode node, pType returnType);
-void DefList(pNode node, pItem structInfo);
-void Def(pNode node, pItem structInfo);
-void DecList(pNode node, pType specifier, pItem structInfo);
-void Dec(pNode node, pType specifier, pItem structInfo);
-pType Exp(pNode node);
-void Args(pNode node, pItem funcInfo);
+/// 检查 \p item 是否已经在符号表 \p table 中定义过。
+///
+/// 如果已经定义，返回 1；否则返回 0
+int is_table_item_redefined(struct sym_table* table, struct table_item* item);
 
-#endif
+/// 在符号表 \p table 中插入新条目 \p item
+void add_table_item(struct sym_table* table, struct table_item* item);
+
+// ========== 递归处理语法分析树 ==========
+
+void               ExtDef(Node* node);
+void               ExtDecList(Node* node, struct type* specifier);
+struct type*       Specifier(Node* node);
+struct type*       StructSpecifier(Node* node);
+struct table_item* VarDec(Node* node, struct type* specifier);
+void               FunDec(Node* node, struct type* return_type);
+void               VarList(Node* node, struct table_item* func_item);
+struct field*      ParamDec(Node* node);
+void               CompSt(Node* node, struct type* return_type);
+void               StmtList(Node* node, struct type* return_type);
+void               Stmt(Node* node, struct type* return_type);
+void               DefList(Node* node, struct table_item* struct_item);
+void               Def(Node* node, struct table_item* struct_item);
+void               DecList(Node* node, struct type* specifier,
+                           struct table_item* struct_item);
+void               Dec(Node* node, struct type* specifier,
+                       struct table_item* struct_item);
+struct type*       Exp(Node* node);
+void               Args(Node* node, struct table_item* func_item);

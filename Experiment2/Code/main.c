@@ -1,6 +1,6 @@
 #include "node.h"
 #include "syntax.tab.h"
-#include "semanticAnalysis.h"
+#include "semantic.h"
 BOOL lexError = FALSE;
 BOOL synError = FALSE;
 
@@ -28,9 +28,12 @@ int main(int argc, char** argv) {
         yyrestart(f);
         yyparse();
         fclose(f);
-        // if(!lexError && !synError)
-        //     PrintTree(root, 0);
-        Traversal(root);
+        if(!lexError && !synError)
+        { 
+            table = init_table();
+            Traversal(root);
+        }
+        // PrintTree(root,0);
         DeleteTree(root);
         yylineno = 1;
         lexError = FALSE;

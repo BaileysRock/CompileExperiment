@@ -23,7 +23,7 @@ lexical:$(LexicalFile)
 syntax:$(SyntaxFile)
 	$(BISON) -d $(SyntaxFile)
 parser:$(SyntaxFileC) node.c main.c
-	$(CC) $(SyntaxFileC) -g node.c main.c semanticAnalysis.c -o parser -lfl
+	$(CC) $(SyntaxFileC) -g node.c semantic.c main.c -o parser -lfl
 
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h 

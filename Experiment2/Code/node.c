@@ -29,6 +29,12 @@ Node* CreateNode(int lineNoTemp, NodeType nodeTypeTemp, char*nameTemp, char*toke
     if(tokenTemp != NULL)
         strncpy(value, tokenTemp, tokenLength);
     newNode->value = value;
+
+    if(!(nodeTypeTemp == TOKEN_INT || nodeTypeTemp == TOKEN_FLOAT || nodeTypeTemp == TOKEN_TYPE || nodeTypeTemp == TOKEN_ID))
+    {
+        newNode->value = name;
+    }
+
     return newNode;
 }
 

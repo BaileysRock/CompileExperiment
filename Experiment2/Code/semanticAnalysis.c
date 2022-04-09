@@ -1,5 +1,6 @@
 # include "semanticAnalysis.h"
 # include <assert.h>
+extern int yylineno;
 // 哈希函数的实现
 unsigned int hash_pjw(char* name)
 {
@@ -15,7 +16,7 @@ unsigned int hash_pjw(char* name)
 }
 
 // hashtable
-Type symbolList[hashMapLength];
+FieldList* symbolList[hashMapLength];
 
 // 遍历树结构
 void Traversal(Node* pNode)
@@ -28,35 +29,20 @@ void Traversal(Node* pNode)
     Traversal(pNode->brotherNode);
 }
 
-Type newType(Kind kind, ...) {
-    Type p = (Type)malloc(sizeof(struct Type_));
-    assert(p != NULL);
-    p->kind = kind;
-    va_list vaList;
-    switch (kind) {
-        case BASIC:
-            va_start(vaList, 1);
-            p->u.basic = va_arg(vaList, basicType);
-            break;
-        case ARRAY:
-            va_start(vaList, 2);
-            p->u.array.elem = va_arg(vaList, Type);
-            p->u.array.size = va_arg(vaList, int);
-            break;
-        case STRUCTURE:
-            va_start(vaList, 2);
-            p->u.structure.structName = va_arg(vaList, char*);
-            p->u.structure.field = va_arg(vaList, FieldList);
-            break;
-        case FUNCTION:
-            va_start(vaList, 3);
-            p->u.function.argc = va_arg(vaList, int);
-            p->u.function.argv = va_arg(vaList, FieldList);
-            p->u.function.returnType = va_arg(vaList, pType);
-            break;
+
+
+// Specifier -> TYPE
+//            | StructSpecifier
+Type* Specifier(Node* pNode)
+{
+    assert(pNode != NULL);
+    char* firstName = pNode->childNode->name;
+    if (!strcmp(firstName,"TYPE")){
+        if(!strcmp(pNode->childNode->value,"int"))
+            return newTypeSpecifier(BASIC,INT_TYPE);
+        else if(!strcmp(pNode->childNode->value,"float"))
+            return newTypeSpecifier(BASIC,FLOAT_TYPE);
     }
-    va_end(vaList);
-    return p;
 }
 
 
@@ -66,37 +52,185 @@ Type newType(Kind kind, ...) {
 void ExtDef(Node* pNode)
 {
     assert(pNode != NULL);
-    Type SpecifierType = Specifier(pNode->childNode);
+    Type* SpecifierType = Specifier(pNode->childNode);
     char* secondName = pNode->childNode->brotherNode->name;
-    if (!strcmp(secondName,"ExtDecList")){
-        ExtDecList(pNode->childNode->next,SpecifierType);
+    if (!strcmp(secondName, "ExtDecList")){
+        // 传入的为ExtDecList节点
+        ExtDecList(pNode->childNode->brotherNode,SpecifierType);
     }
     else if (!strcmp(secondName, "FunDec")){
-        FunDec(node->child->next, specifierType);
-        CompSt(node->child->next->next, specifierType);
+        FunDec(pNode->childNode->brotherNode, SpecifierType);
+        CompSt(pNode->childNode->brotherNode->brotherNode, SpecifierType);
     }
-    if (specifierType) deleteType(specifierType);
+    // if (specifierType) deleteType(specifierType);
 
 }
 
 
-Type Specifier(Node* pNode) {
-    assert(pNode != NULL);
-    // Specifier -> TYPE
-    //            | StructSpecifier
 
-    pNode t = node->child;
-    // Specifier -> TYPE
-    if (!strcmp(t->name, "TYPE")) {
-        if (!strcmp(t->val, "float")) {
-            return newType(BASIC, FLOAT_TYPE);
-        } else {
-            return newType(BASIC, INT_TYPE);
+
+
+Type* newTypeSpecifier(typeKind typekind,basicType basictype)
+{
+    Type* type = (Type*)malloc(sizeof(Type));
+    type->kind = typekind;
+    type->u.basic = basictype;
+    return type;
+}
+
+
+// ExtDecList -> VarDec     
+//             | VarDec COMMA ExtDecList 
+void ExtDecList(Node* pNode, Type* type)
+{
+    if(pNode != NULL)
+    {
+      if(pNode->childNode->brotherNode == NULL)
+      {
+          VarDec(pNode->childNode,type,NULL);
+      }
+      else
+      {
+          VarDec(pNode->childNode,type,NULL);
+          ExtDecList(pNode->childNode->brotherNode->brotherNode,type);
+      }
+    }
+}
+
+
+
+void VarDec(Node* pNode, Type* type, Type* current)
+{
+    if(pNode != NULL)
+    {
+        if(!strcmp(pNode->childNode->name,"ID") && current == NULL)
+        {
+            FieldList* id = tokenType(pNode->childNode->value,type);
+            insertHashMap(id);
+        }
+        else if (!strcmp(pNode->childNode->name,"ID") && current == NULL)
+        {
+            FieldList* id = arrayType(pNode->childNode->value,current);
+            insertHashMap(id);            
+        }
+        else
+        {
+            char* number = pNode->childNode->brotherNode->brotherNode->value;
+            for(int i = 0;i<strlen(number);i++)
+            {
+                if(number[i] == '.')
+                    throwError(error12);
+            }
+            current = newArrayType(current,type);
+            VarDec(pNode,type,current);
         }
     }
-    // Specifier -> StructSpecifier
-    else {
-        return StructSpecifier(t);
+}
+
+
+
+
+
+Type* newTypeVarDec(typeKind typekind,basicType basictype)
+{
+    Type* type = (Type*)malloc(sizeof(Type));
+    type->kind = typekind;
+    type->u.basic = basictype;
+    return type;
+}
+
+
+
+
+
+// 构造数组的Type
+Type* newArrayType(Type*currentType,Type* beforeType)
+{
+    Type* type = (Type*) malloc(sizeof(Type));
+    type->kind = ARRAY;
+    type->u.array.basictype = beforeType->u.basic;
+    type->u.array.elem = currentType;
+    
+    if(currentType == NULL)
+    {
+        type->u.array.dimension = 1;
+    }
+    else
+    {
+        type->u.array.dimension = currentType->u.array.dimension + 1;
+    }
+    return type;
+}
+
+// 存入hashmap的type
+FieldList* arrayType(char* name,Type* currentType)
+{
+    FieldList* fieldList = (FieldList*)malloc(sizeof(FieldList));
+    fieldList->type = currentType;
+    fieldList->name = name;
+    fieldList->tail = NULL;
+    return fieldList;
+}
+
+
+FieldList* tokenType(char* name,Type* type)
+{
+    FieldList* fieldList = (FieldList*)malloc(sizeof(FieldList));
+    Type* typeTmp = (Type*)malloc(sizeof(Type));
+    typeTmp->kind = type->kind;
+    typeTmp->u.basic = type->u.basic;
+    int nameLength = strlen(name)+1;
+    char newName = (char*)malloc(sizeof(char)*nameLength);
+    strncpy(newName,name,nameLength);
+    fieldList->name = newName;
+    fieldList->type = typeTmp;
+    fieldList->tail = NULL;
+    return fieldList;
+}
+
+void insertHashMap(FieldList* fieldList)
+{
+    unsigned int index = hash_pjw(fieldList->name);
+    FieldList* temp = symbolList[index];
+    if(temp == NULL)
+    {
+        symbolList[index] = fieldList;
+    }
+    else
+    {
+        while(temp->tail != NULL)
+        {
+            temp = temp -> tail;
+        }
+        temp -> tail = fieldList;
     }
 }
 
+
+
+void FunDec(Node* pNode, Type* type)
+{
+
+}
+
+
+void CompSt(Node* pNode, Type* type)
+{
+
+}
+
+
+
+
+void throwError(errorType errortype)
+{
+    char* errorInfos;
+    int errorlabel;
+    switch(errortype)
+    {
+        case error12:
+            errorlabel = 12;
+            errorInfos = "float number in []";
+    }
+    printf("Error type [%d] at Line %d:%s",errorlabel,yylineno,errorInfos);
+}

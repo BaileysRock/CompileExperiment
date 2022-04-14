@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         fclose(f);
         if(!lexError && !synError)
         { 
-            table = init_table();
+            table = initTable();
             Traversal(root);
         }
         // PrintTree(root,0);

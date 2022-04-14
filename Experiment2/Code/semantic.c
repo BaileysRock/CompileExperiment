@@ -4,7 +4,7 @@
 
 
 
-char* copy_str(char* src) {
+char* copyStr(char* src) {
     if (src == NULL) {
         return NULL;
     }
@@ -16,7 +16,7 @@ char* copy_str(char* src) {
     return cpy;
 }
 
-void print_error(enum error_type type, int line, char* msg) {
+void printError(enum error_type type, int line, char* msg) {
     printf("Error type %d at Line %d: %s\n", type, line, msg);
 }
 
@@ -26,7 +26,7 @@ void print_func_error(Node* node, struct table_item* func_item) {
     printf("Function \"%s(", func_item->field->value);
     struct field* field_temp = func_item->field;
     while (field_temp) {
-        print_kind(field_temp->type->u.function.argv->type);
+        printKind(field_temp->type->u.function.argv->type);
         field_temp = field_temp->next;
     }
     printf(")\" is not applicable for arguments \"(");
@@ -34,7 +34,7 @@ void print_func_error(Node* node, struct table_item* func_item) {
     Node* args_node_temp = node;
     while (args_node_temp->childNode->brotherNode) {
         struct type* args_type_temp = Exp(args_node_temp->childNode);
-        print_kind(args_type_temp);
+        printKind(args_type_temp);
         printf(", ");
 
         // args_node_temp->childNode->brotherNode
@@ -45,11 +45,11 @@ void print_func_error(Node* node, struct table_item* func_item) {
             args_node_temp->childNode->brotherNode->brotherNode;
     }
     struct type* args_type_temp = Exp(args_node_temp->childNode);
-    print_kind(args_type_temp);
+    printKind(args_type_temp);
     printf(")\".\n");
 }
 
-void print_kind(struct type* type) {
+void printKind(struct type* type) {
     switch (type->kind) {
     case BASIC:
         if (type->u.basic == INT_TYPE) {
@@ -59,7 +59,7 @@ void print_kind(struct type* type) {
         }
         break;
     case ARRAY:
-        print_kind(type->u.array.element_type);
+        printKind(type->u.array.element_type);
         break;
     case STRUCTURE:
         printf("struct %s", type->u.structure.value);
@@ -81,7 +81,7 @@ void Traversal(Node* node) {
     Traversal(node->brotherNode);
 }
 
-struct type* new_type(enum kind kind, ...) {
+struct type* newType(enum kind kind, ...) {
     struct type* type = (struct type*)malloc(sizeof(struct type));
 
     type->kind = kind;
@@ -118,7 +118,7 @@ struct type* new_type(enum kind kind, ...) {
     return type;
 }
 
-struct type* copy_type(struct type* src) {
+struct type* copyType(struct type* src) {
     if (src == NULL) {
         return NULL;
     }
@@ -132,24 +132,24 @@ struct type* copy_type(struct type* src) {
         type->u.basic = src->u.basic;
         break;
     case ARRAY:
-        type->u.array.element_type = copy_type(src->u.array.element_type);
+        type->u.array.element_type = copyType(src->u.array.element_type);
         type->u.array.size         = src->u.array.size;
         break;
     case STRUCTURE:
-        type->u.structure.value  = copy_str(src->u.structure.value);
-        type->u.structure.field = copy_field(src->u.structure.field);
+        type->u.structure.value  = copyStr(src->u.structure.value);
+        type->u.structure.field = copyField(src->u.structure.field);
         break;
     case FUNCTION:
         type->u.function.argc        = src->u.function.argc;
-        type->u.function.argv        = copy_field(src->u.function.argv);
-        type->u.function.return_type = copy_type(src->u.function.return_type);
+        type->u.function.argv        = copyField(src->u.function.argv);
+        type->u.function.return_type = copyType(src->u.function.return_type);
         break;
     }
 
     return type;
 }
 
-int is_type_same(struct type* type1, struct type* type2) {
+int isTypeSame(struct type* type1, struct type* type2) {
     if (type1 == NULL || type2 == NULL)
         return 1;
     if (type1->kind == FUNCTION || type2->kind == FUNCTION)
@@ -161,7 +161,7 @@ int is_type_same(struct type* type1, struct type* type2) {
         case BASIC:
             return type1->u.basic == type2->u.basic;
         case ARRAY:
-            return is_type_same(type1->u.array.element_type,
+            return isTypeSame(type1->u.array.element_type,
                                 type2->u.array.element_type);
         case STRUCTURE:
             return !strcmp(type1->u.structure.value, type2->u.structure.value);
@@ -172,28 +172,28 @@ int is_type_same(struct type* type1, struct type* type2) {
     }
 }
 
-struct field* new_field(char* name, struct type* type) {
+struct field* newField(char* name, struct type* type) {
     struct field* field = (struct field*)malloc(sizeof(struct field));
 
-    field->value = copy_str(name);
+    field->value = copyStr(name);
     field->type = type;
     field->next = NULL;
 
     return field;
 }
 
-struct field* copy_field(struct field* src) {
+struct field* copyField(struct field* src) {
     struct field* head = NULL;
     struct field* curr = NULL;
     struct field* copy = src;
 
     while (copy) {
         if (!head) {
-            head = new_field(copy->value, copy_type(copy->type));
+            head = newField(copy->value, copyType(copy->type));
             curr = head;
             copy = copy->next;
         } else {
-            curr->next = new_field(copy->value, copy_type(copy->type));
+            curr->next = newField(copy->value, copyType(copy->type));
             curr       = curr->next;
             copy       = copy->next;
         }
@@ -202,15 +202,15 @@ struct field* copy_field(struct field* src) {
     return head;
 }
 
-void set_field_name(struct field* field, char* name) {
+void setFieldName(struct field* field, char* name) {
     if (field->value != NULL) {
         free(field->value);
     }
 
-    field->value = copy_str(name);
+    field->value = copyStr(name);
 }
 
-struct table_item* new_table_item(struct field* field) {
+struct table_item* newTableItem(struct field* field) {
     struct table_item* item =
         (struct table_item*)malloc(sizeof(struct table_item));
 
@@ -220,7 +220,7 @@ struct table_item* new_table_item(struct field* field) {
     return item;
 }
 
-int is_struct(struct table_item* item) {
+int isStruct(struct table_item* item) {
     if (item == NULL)
         return 0;
     if (item->field->type->kind != STRUCTURE)
@@ -230,9 +230,9 @@ int is_struct(struct table_item* item) {
     return 1;
 }
 
-struct sym_table* init_table() {
-    struct sym_table* table =
-        (struct sym_table*)malloc(sizeof(struct sym_table));
+struct symbol_table* initTable() {
+    struct symbol_table* table =
+        (struct symbol_table*)malloc(sizeof(struct symbol_table));
 
     table->hash_array = (struct table_item**)malloc(sizeof(struct table_item*) *
                                                     SYM_TABLE_SIZE);
@@ -243,7 +243,7 @@ struct sym_table* init_table() {
     return table;
 };
 
-unsigned get_hash_code(char* str) {
+unsigned getHashCode(char* str) {
     unsigned hash = 0;
 
     for (; *str; ++str) {
@@ -257,8 +257,8 @@ unsigned get_hash_code(char* str) {
     return hash;
 }
 
-struct table_item* get_table_item(struct sym_table* table, char* name) {
-    unsigned           hash_code = get_hash_code(name);
+struct table_item* getTableItem(struct symbol_table* table, char* name) {
+    unsigned           hash_code = getHashCode(name);
     struct table_item* item_head = table->hash_array[hash_code];
 
     while (item_head) {
@@ -272,8 +272,8 @@ struct table_item* get_table_item(struct sym_table* table, char* name) {
     return NULL;
 }
 
-int is_table_item_redefined(struct sym_table* table, struct table_item* item) {
-    struct table_item* temp = get_table_item(table, item->field->value);
+int isTableItemRedefined(struct symbol_table* table, struct table_item* item) {
+    struct table_item* temp = getTableItem(table, item->field->value);
 
     while (temp) {
         if (!strcmp(temp->field->value, item->field->value)) {
@@ -286,8 +286,8 @@ int is_table_item_redefined(struct sym_table* table, struct table_item* item) {
     return 0;
 }
 
-void add_table_item(struct sym_table* table, struct table_item* item) {
-    unsigned hash_code = get_hash_code(item->field->value);
+void addTableItem(struct symbol_table* table, struct table_item* item) {
+    unsigned hash_code = getHashCode(item->field->value);
 
     item->next                   = table->hash_array[hash_code];
     table->hash_array[hash_code] = item;
@@ -321,12 +321,12 @@ void ExtDecList(Node* node, struct type* specifier) {
     while (temp) {
         struct table_item* item = VarDec(temp->childNode, specifier);
 
-        if (is_table_item_redefined(table, item)) {
+        if (isTableItemRedefined(table, item)) {
             char msg[100] = {0};
             sprintf(msg, "Redefined variable \"%s\".", item->field->value);
-            print_error(REDEFINE_VAR, temp->lineNo, msg);
+            printError(REDEFINE_VAR, temp->lineNo, msg);
         } else {
-            add_table_item(table, item);
+            addTableItem(table, item);
         }
 
         if (temp->childNode->brotherNode) {
@@ -355,9 +355,9 @@ struct type* Specifier(Node* node) {
         // Specifier : TYPE
 
         if (!strcmp(lc->value, "float")) {
-            return new_type(BASIC, FLOAT_TYPE);
+            return newType(BASIC, FLOAT_TYPE);
         } else {
-            return new_type(BASIC, INT_TYPE);
+            return newType(BASIC, INT_TYPE);
         }
     } else {
         // Specifier : StructSpecifier
@@ -377,13 +377,13 @@ struct type* StructSpecifier(Node* node) {
         // StructSpecifier : STRUCT OptTag LC DefList RC
 
         struct table_item* struct_item =
-            new_table_item(new_field("", new_type(STRUCTURE, NULL, NULL)));
+            newTableItem(newField("", newType(STRUCTURE, NULL, NULL)));
 
         // OptTag -> ID | empty
         // Tag -> ID
 
         if (!strcmp(second_child->value, "OptTag")) {
-            set_field_name(struct_item->field, second_child->childNode->value);
+            setFieldName(struct_item->field, second_child->childNode->value);
             second_child = second_child->brotherNode;
         }
 
@@ -391,34 +391,34 @@ struct type* StructSpecifier(Node* node) {
             DefList(second_child->brotherNode, struct_item);
         }
 
-        if (is_table_item_redefined(table, struct_item)) {
+        if (isTableItemRedefined(table, struct_item)) {
             char msg[100] = {0};
             sprintf(msg, "Duplicated name \"%s\".", struct_item->field->value);
-            print_error(DUPLICATED_NAME, node->lineNo, msg);
+            printError(DUPLICATED_NAME, node->lineNo, msg);
         } else {
-            return_type = new_type(
-                STRUCTURE, copy_str(struct_item->field->value),
-                copy_field(struct_item->field->type->u.structure.field));
+            return_type = newType(
+                STRUCTURE, copyStr(struct_item->field->value),
+                copyField(struct_item->field->type->u.structure.field));
 
             if (!strcmp(node->childNode->brotherNode->value, "OptTag")) {
-                add_table_item(table, struct_item);
+                addTableItem(table, struct_item);
             }
         }
     } else {
         // StructSpecifier : STRUCT Tag
 
         struct table_item* struct_item =
-            get_table_item(table, second_child->childNode->value);
+            getTableItem(table, second_child->childNode->value);
 
-        if (struct_item == NULL || !is_struct(struct_item)) {
+        if (struct_item == NULL || !isStruct(struct_item)) {
             char msg[100] = {0};
             sprintf(msg, "Undefined structure \"%s\".",
                     second_child->childNode->value);
-            print_error(UNDEFINE_STRUCT, node->lineNo, msg);
+            printError(UNDEFINE_STRUCT, node->lineNo, msg);
         } else {
-            return_type = new_type(
-                STRUCTURE, copy_str(struct_item->field->value),
-                copy_field(struct_item->field->type->u.structure.field));
+            return_type = newType(
+                STRUCTURE, copyStr(struct_item->field->value),
+                copyField(struct_item->field->type->u.structure.field));
         }
     }
 
@@ -435,12 +435,12 @@ struct table_item* VarDec(Node* node, struct type* specifier) {
         id = id->childNode;
     }
 
-    struct table_item* item = new_table_item(new_field(id->value, NULL));
+    struct table_item* item = newTableItem(newField(id->value, NULL));
 
     if (node->childNode->nodeType == TOKEN_ID) {
         // VarDec : ID
 
-        item->field->type = copy_type(specifier);
+        item->field->type = copyType(specifier);
     } else {
         // VarDec : VarDec LB INT RB
 
@@ -449,7 +449,7 @@ struct table_item* VarDec(Node* node, struct type* specifier) {
 
         while (vardec->brotherNode) {
             item->field->type =
-                new_type(ARRAY, copy_type(temp),
+                newType(ARRAY, copyType(temp),
                          atoi(vardec->brotherNode->brotherNode->value));
             temp   = item->field->type;
             vardec = vardec->childNode;
@@ -463,9 +463,9 @@ void FunDec(Node* node, struct type* return_type) {
     // FunDec : ID LP VarList RP
     //        | ID LP RP
 
-    struct table_item* item = new_table_item(
-        new_field(node->childNode->value,
-                  new_type(FUNCTION, 0, NULL, copy_type(return_type))));
+    struct table_item* item = newTableItem(
+        newField(node->childNode->value,
+                  newType(FUNCTION, 0, NULL, copyType(return_type))));
 
     if (!strcmp(node->childNode->brotherNode->brotherNode->value,
                 "VarList")) {
@@ -477,13 +477,13 @@ void FunDec(Node* node, struct type* return_type) {
     // FunDec : ID LP RP 不需要处理
 
     // 检查重定义
-    if (is_table_item_redefined(table, item)) {
+    if (isTableItemRedefined(table, item)) {
         char msg[100] = {0};
         sprintf(msg, "Redefined function \"%s\".", item->field->value);
-        print_error(REDEFINE_FUNC, node->lineNo, msg);
+        printError(REDEFINE_FUNC, node->lineNo, msg);
         item = NULL;
     } else {
-        add_table_item(table, item);
+        addTableItem(table, item);
     }
 }
 
@@ -497,7 +497,7 @@ void VarList(Node* node, struct table_item* func_item) {
 
     // VarList : ParamDec
     struct field* paramdec                  = ParamDec(lc);
-    func_item->field->type->u.function.argv = copy_field(paramdec);
+    func_item->field->type->u.function.argv = copyField(paramdec);
     curr = func_item->field->type->u.function.argv;
     argc++;
 
@@ -507,7 +507,7 @@ void VarList(Node* node, struct table_item* func_item) {
         paramdec = ParamDec(lc);
 
         if (paramdec) {
-            curr->next = copy_field(paramdec);
+            curr->next = copyField(paramdec);
             curr       = curr->next;
             argc++;
         }
@@ -523,13 +523,13 @@ struct field* ParamDec(Node* node) {
     struct table_item* item =
         VarDec(node->childNode->brotherNode, specifier_type);
 
-    if (is_table_item_redefined(table, item)) {
+    if (isTableItemRedefined(table, item)) {
         char msg[100] = {0};
         sprintf(msg, "Redefined variable \"%s\".", item->field->value);
-        print_error(REDEFINE_VAR, node->lineNo, msg);
+        printError(REDEFINE_VAR, node->lineNo, msg);
         return NULL;
     } else {
-        add_table_item(table, item);
+        addTableItem(table, item);
         return item->field;
     }
 }
@@ -582,8 +582,8 @@ void Stmt(Node* node, struct type* return_type) {
 
         exp_type = Exp(node->childNode->brotherNode);
 
-        if (!is_type_same(return_type, exp_type)) {
-            print_error(TYPE_MISMATCH_RETURN, node->lineNo,
+        if (!isTypeSame(return_type, exp_type)) {
+            printError(TYPE_MISMATCH_RETURN, node->lineNo,
                         "Type mismatched for return.");
         }
     } else if (!strcmp(node->childNode->value, "IF")) {
@@ -663,7 +663,7 @@ void Dec(Node* node, struct type* specifier,
                     char msg[100] = {0};
                     sprintf(msg, "Redefined field \"%s\".",
                             dec_item->field->value);
-                    print_error(REDEFINE_FEILD, node->lineNo, msg);
+                    printError(REDEFINE_FEILD, node->lineNo, msg);
                     return;
                 } else {
                     last         = struct_field;
@@ -673,20 +673,20 @@ void Dec(Node* node, struct type* specifier,
 
             if (last == NULL) {
                 struct_info->field->type->u.structure.field =
-                    copy_field(dec_item->field);
+                    copyField(dec_item->field);
             } else {
-                last->next = copy_field(dec_item->field);
+                last->next = copyField(dec_item->field);
             }
         } else {
             struct table_item* decitem = VarDec(node->childNode, specifier);
-            if (is_table_item_redefined(table, decitem)) {
+            if (isTableItemRedefined(table, decitem)) {
                 // 出现冲突，报错
                 char msg[100] = {0};
                 sprintf(msg, "Redefined variable \"%s\".",
                         decitem->field->value);
-                print_error(REDEFINE_VAR, node->lineNo, msg);
+                printError(REDEFINE_VAR, node->lineNo, msg);
             } else {
-                add_table_item(table, decitem);
+                addTableItem(table, decitem);
             }
         }
     } else {
@@ -694,7 +694,7 @@ void Dec(Node* node, struct type* specifier,
 
         if (struct_info != NULL) {
             // 结构体内不能赋值，报错
-            print_error(REDEFINE_FEILD, node->lineNo,
+            printError(REDEFINE_FEILD, node->lineNo,
                         "Illegal initialize variable in struct.");
         } else {
             // 判断赋值类型是否相符
@@ -702,24 +702,24 @@ void Dec(Node* node, struct type* specifier,
             struct table_item* dec_item = VarDec(node->childNode, specifier);
             struct type*       exp_type =
                 Exp(node->childNode->brotherNode->brotherNode);
-            if (is_table_item_redefined(table, dec_item)) {
+            if (isTableItemRedefined(table, dec_item)) {
                 // 出现冲突，报错
                 char msg[100] = {0};
                 sprintf(msg, "Redefined variable \"%s\".",
                         dec_item->field->value);
-                print_error(REDEFINE_VAR, node->lineNo, msg);
+                printError(REDEFINE_VAR, node->lineNo, msg);
             }
-            if (!is_type_same(dec_item->field->type, exp_type)) {
+            if (!isTypeSame(dec_item->field->type, exp_type)) {
                 // 类型不相符，报错
-                print_error(TYPE_MISMATCH_ASSIGN, node->lineNo,
+                printError(TYPE_MISMATCH_ASSIGN, node->lineNo,
                             "struct type mis matched for assignment.");
             }
             if (dec_item->field->type && dec_item->field->type->kind == ARRAY) {
                 // 报错，对非 BASIC 类型赋值
-                print_error(TYPE_MISMATCH_ASSIGN, node->lineNo,
+                printError(TYPE_MISMATCH_ASSIGN, node->lineNo,
                             "Illegal initialize variable.");
             } else {
-                add_table_item(table, dec_item);
+                addTableItem(table, dec_item);
             }
         }
     }
@@ -781,21 +781,21 @@ struct type* Exp(Node* node) {
                 Node* lc_lc = lc->childNode;
                 if (lc_lc->nodeType == TOKEN_FLOAT || lc_lc->nodeType == TOKEN_INT) {
                     // 报错，左值
-                    print_error(LEFT_VAR_ASSIGN, lc->lineNo,
+                    printError(LEFT_VAR_ASSIGN, lc->lineNo,
                                 "The left-hand side of an assignment must be "
                                 "a variable.");
                 } else if (lc_lc->nodeType == TOKEN_ID ||
                            !strcmp(lc_lc->brotherNode->value, "LB") ||
                            !strcmp(lc_lc->brotherNode->value, "DOT")) {
-                    if (!is_type_same(expl, expr)) {
+                    if (!isTypeSame(expl, expr)) {
                         // 报错，类型不匹配
-                        print_error(TYPE_MISMATCH_ASSIGN, lc->lineNo,
+                        printError(TYPE_MISMATCH_ASSIGN, lc->lineNo,
                                     "Type mismatched for assignment.");
                     } else
-                        return_type = copy_type(expl);
+                        return_type = copyType(expl);
                 } else {
                     //报错，左值
-                    print_error(LEFT_VAR_ASSIGN, lc->lineNo,
+                    printError(LEFT_VAR_ASSIGN, lc->lineNo,
                                 "The left-hand side of an assignment must be "
                                 "a variable.");
                 }
@@ -811,15 +811,15 @@ struct type* Exp(Node* node) {
                 if (expl && expr &&
                     (expl->kind == ARRAY || expr->kind == ARRAY)) {
                     // 报错，数组，结构体运算
-                    print_error(TYPE_MISMATCH_OP, lc->lineNo,
+                    printError(TYPE_MISMATCH_OP, lc->lineNo,
                                 "Type mismatched for operands.");
-                } else if (!is_type_same(expl, expr)) {
+                } else if (!isTypeSame(expl, expr)) {
                     // 报错，类型不匹配
-                    print_error(TYPE_MISMATCH_OP, lc->lineNo,
+                    printError(TYPE_MISMATCH_OP, lc->lineNo,
                                 "Type mismatched for operands.");
                 } else {
                     if (expl && expr) {
-                        return_type = copy_type(expl);
+                        return_type = copyType(expl);
                     }
                 }
             }
@@ -838,16 +838,16 @@ struct type* Exp(Node* node) {
                     char msg[100] = {0};
                     sprintf(msg, "\"%s\" is not an array.",
                             lc->childNode->value);
-                    print_error(NOT_A_ARRAY, lc->lineNo, msg);
+                    printError(NOT_A_ARRAY, lc->lineNo, msg);
                 } else if (!arr_index || arr_index->kind != BASIC ||
                            arr_index->u.basic != INT_TYPE) {
                     // 报错，不用 int 索引 []
                     char msg[100] = {0};
                     sprintf(msg, "\"%s\" is not an integer.",
                             lc->brotherNode->brotherNode->childNode->value);
-                    print_error(NOT_A_INT, lc->lineNo, msg);
+                    printError(NOT_A_INT, lc->lineNo, msg);
                 } else {
-                    return_type = copy_type(arr_name->u.array.element_type);
+                    return_type = copyType(arr_name->u.array.element_type);
                 }
 
                 return return_type;
@@ -860,7 +860,7 @@ struct type* Exp(Node* node) {
                 if (!struct_type || struct_type->kind != STRUCTURE ||
                     !struct_type->u.structure.value) {
                     // 报错，对非结构体使用 "." 运算符
-                    print_error(ILLEGAL_USE_DOT, lc->lineNo,
+                    printError(ILLEGAL_USE_DOT, lc->lineNo,
                                 "Illegal use of \".\".");
                 } else {
                     Node* struct_member =
@@ -878,9 +878,9 @@ struct type* Exp(Node* node) {
                         char msg[100] = {0};
                         sprintf(msg, "Non-existent field \"%s\".",
                                 struct_member->value);
-                        print_error(NONEXISTFIELD, lc->lineNo, msg);
+                        printError(NONEXISTFIELD, lc->lineNo, msg);
                     } else {
-                        return_type = copy_type(struct_field->type);
+                        return_type = copyType(struct_field->type);
                     }
                 }
 
@@ -899,7 +899,7 @@ struct type* Exp(Node* node) {
             printf("Error type %d at Line %d: %s.\n", 7, lc->lineNo,
                    "TYPE_MISMATCH_OP");
         } else {
-            return_type = copy_type(simgle_exp);
+            return_type = copyType(simgle_exp);
         }
 
         return return_type;
@@ -910,24 +910,24 @@ struct type* Exp(Node* node) {
         // Exp : ID LP Args RP
         //     | ID LP RP
 
-        struct table_item* func_item = get_table_item(table, lc->value);
+        struct table_item* func_item = getTableItem(table, lc->value);
 
         // 没有这个函数
         if (func_item == NULL) {
             char msg[100] = {0};
             sprintf(msg, "Undefined function \"%s\".", lc->value);
-            print_error(UNDEFINE_FUNC, node->lineNo, msg);
+            printError(UNDEFINE_FUNC, node->lineNo, msg);
             return NULL;
         } else if (func_item->field->type->kind != FUNCTION) {
             char msg[100] = {0};
             sprintf(msg, "\"i\" is not a function.", lc->value);
-            print_error(NOT_A_FUNC, node->lineNo, msg);
+            printError(NOT_A_FUNC, node->lineNo, msg);
             return NULL;
         } else if (!strcmp(lc->brotherNode->brotherNode->value, "Args")) {
             // Exp : ID LP Args RP
 
             Args(lc->brotherNode->brotherNode, func_item);
-            return copy_type(func_item->field->type->u.function.return_type);
+            return copyType(func_item->field->type->u.function.return_type);
         } else {
             // Exp : ID LP RP
 
@@ -937,31 +937,31 @@ struct type* Exp(Node* node) {
                         "too few arguments to function \"%s\", except %d args.",
                         func_item->field->value,
                         func_item->field->type->u.function.argc);
-                print_error(FUNC_AGRC_MISMATCH, node->lineNo, msg);
+                printError(FUNC_AGRC_MISMATCH, node->lineNo, msg);
             }
-            return copy_type(func_item->field->type->u.function.return_type);
+            return copyType(func_item->field->type->u.function.return_type);
         }
     } else if (lc->nodeType == TOKEN_ID) {
         // Exp : ID
 
-        struct table_item* item = get_table_item(table, lc->value);
-        if (item == NULL || is_struct(item)) {
+        struct table_item* item = getTableItem(table, lc->value);
+        if (item == NULL || isStruct(item)) {
             char msg[100] = {0};
             sprintf(msg, "Undefined variable \"%s\".", lc->value);
-            print_error(UNDEFINE_VAR, lc->lineNo, msg);
+            printError(UNDEFINE_VAR, lc->lineNo, msg);
             return NULL;
         } else {
-            return copy_type(item->field->type);
+            return copyType(item->field->type);
         }
     } else {
         if (lc->nodeType == TOKEN_FLOAT) {
             // Exp : FLOAT
 
-            return new_type(BASIC, FLOAT_TYPE);
+            return newType(BASIC, FLOAT_TYPE);
         } else {
             // Exp : INT
 
-            return new_type(BASIC, INT_TYPE);
+            return newType(BASIC, INT_TYPE);
         }
     }
 }
@@ -981,11 +981,11 @@ void Args(Node* node, struct table_item* func_item) {
 
         struct type* arg_type = Exp(temp->childNode);
 
-        if (!is_type_same(arg_type, argv->type)) {
+        if (!isTypeSame(arg_type, argv->type)) {
             char msg[100] = {0};
             sprintf(msg, "Function \"%s\" is not applicable for arguments.",
                     func_item->field->value);
-            print_error(FUNC_AGRC_MISMATCH, node->lineNo, msg);
+            printError(FUNC_AGRC_MISMATCH, node->lineNo, msg);
             return;
         }
 

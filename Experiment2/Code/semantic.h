@@ -5,21 +5,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-/// 符号表
-struct sym_table* table;
+/// 定义符号表
+struct symbol_table* table;
 
-/// 标识符类型
+/// 定义标识符类型
 enum kind {
-    BASIC,     // 基本类型: int/float
-    ARRAY,     // 数组类型
-    STRUCTURE, // 结构体类型
-    FUNCTION   // 函数类型
+    BASIC, 
+    // 数组类型
+    ARRAY,
+    // 结构体类型
+    STRUCTURE, 
+    // 函数类型
+    FUNCTION   
 };
 
-/// 标识符类型为 BASIC 时，更加具体的类型
+// 定义基础数据类型
 enum basic_type {
-    INT_TYPE,  // int
-    FLOAT_TYPE // float
+    INT_TYPE,
+    FLOAT_TYPE 
 };
 
 /// 语义分析错误类型
@@ -47,12 +50,9 @@ enum error_type {
 struct type {
     // 标识符类型
     enum kind kind;
-
-    // 具体的类型由 kind 字段指示
     union {
         // 基本类型
         enum basic_type basic;
-
         // 数组类型
         struct {
             struct type* element_type; // 元素类型
@@ -91,93 +91,88 @@ struct table_item {
 #define SYM_TABLE_SIZE 0x3fff
 
 /// 符号表，本质上是一个哈希表，用于根据符号名称快速找到对应的符号表条目
-struct sym_table {
+struct symbol_table {
     /// 一个符号表条目 item 在表中的索引位置的计算方法是：
     /// hash_array[HASH(`name`)] -> `name` 对应的符号表条目
     struct table_item** hash_array;
 };
 
 /// 拷贝字符串 \p src
-char* copy_str(char* src);
+char* copyStr(char* src);
 
 /// 打印错误信息
-void print_error(enum error_type type, int line, char* msg);
+void printError(enum error_type type, int line, char* msg);
 
 /// 打印类型
-void print_kind(struct type* type);
+void printKind(struct type* type);
 
 /// 递归进行语义分析
 void Traversal(Node* node);
 
-/// 根据标识符种类 \p kind 和其余参数新建一个新类型
-struct type* new_type(enum kind kind, ...);
+/// 根据标识符种类kind和其余参数新建一个新类型
+struct type* newType(enum kind kind, ...);
 
-/// 拷贝类型 \p src
-struct type* copy_type(struct type* src);
+/// 拷贝类型src
+struct type* copyType(struct type* src);
 
-/// 检查两个类型 \p type1 和 \p type2 是否相同
-///
+/// 检查两个类型type1和type2是否相同
 /// BASIC: 检查是否同为 int 或 float
 /// ARRAY: 检查元素的类型
 /// STRUCTURE: 检查结构体名称
 /// FUNCTION: 规定函数一定不同
-///
 /// 相同则返回 1；否则返回 0
-int is_type_same(struct type* type1, struct type* type2);
+int isTypeSame(struct type* type1, struct type* type2);
 
-/// 根据名称 \p name 和类型 \p type 新建一个域
-struct field* new_field(char* name, struct type* type);
+/// 根据名称name和类型type新建一个域
+struct field* newField(char* name, struct type* type);
 
-/// 拷贝域 \p src
-struct field* copy_field(struct field* src);
+/// 拷贝域src
+struct field* copyField(struct field* src);
 
-/// 设置域 \p field 的名称字段为 \p name
-void set_field_name(struct field* field, char* name);
+/// 设置域field的名称字段为name
+void setFieldName(struct field* field, char* name);
 
-/// 根据域 \p field 创建一个新符号表条目
-struct table_item* new_table_item(struct field* field);
+/// 根据域field创建一个新符号表条目
+struct table_item* newTableItem(struct field* field);
 
-/// 判断符号表条目 \p item 是否是结构体
+/// 判断符号表条目 item 是否是结构体
 /// 如果是，则返回 1；否则返回 0
-int is_struct(struct table_item* item);
+int isStruct(struct table_item* item);
 
 /// 初始化符号表
-struct sym_table* init_table();
+struct symbol_table* initTable();
 
-/// 计算字符串 \p str 的哈希值
-unsigned get_hash_code(char* str);
+/// 计算字符串str的哈希值
+unsigned getHashCode(char* str);
 
-/// 从符号表 \p table 中查找名称为 \p name 的符号条目指针。
+/// 从符号表table中查找名称为name的符号条目指针。
 ///
 /// 若找不到，则返回 NULL
-struct table_item* get_table_item(struct sym_table* table, char* name);
+struct table_item* getTableItem(struct symbol_table* table, char* name);
 
-/// 检查 \p item 是否已经在符号表 \p table 中定义过。
+/// 检查item是否已经在符号表table中定义过。
 ///
 /// 如果已经定义，返回 1；否则返回 0
-int is_table_item_redefined(struct sym_table* table, struct table_item* item);
+int isTableItemRedefined(struct symbol_table* table, struct table_item* item);
 
-/// 在符号表 \p table 中插入新条目 \p item
-void add_table_item(struct sym_table* table, struct table_item* item);
+/// 在符号表table 中插入新条目item
+void addTableItem(struct symbol_table* table, struct table_item* item);
 
-// ========== 递归处理语法分析树 ==========
-
-void               ExtDef(Node* node);
-void               ExtDecList(Node* node, struct type* specifier);
-struct type*       Specifier(Node* node);
-struct type*       StructSpecifier(Node* node);
+// 递归处理语法树
+void ExtDef(Node* node);
+void ExtDecList(Node* node, struct type* specifier);
+struct type* Specifier(Node* node);
+struct type* StructSpecifier(Node* node);
 struct table_item* VarDec(Node* node, struct type* specifier);
-void               FunDec(Node* node, struct type* return_type);
-void               VarList(Node* node, struct table_item* func_item);
-struct field*      ParamDec(Node* node);
-void               CompSt(Node* node, struct type* return_type);
-void               StmtList(Node* node, struct type* return_type);
-void               Stmt(Node* node, struct type* return_type);
-void               DefList(Node* node, struct table_item* struct_item);
-void               Def(Node* node, struct table_item* struct_item);
-void               DecList(Node* node, struct type* specifier,
-                           struct table_item* struct_item);
-void               Dec(Node* node, struct type* specifier,
-                       struct table_item* struct_item);
-struct type*       Exp(Node* node);
-void               Args(Node* node, struct table_item* func_item);
+void FunDec(Node* node, struct type* return_type);
+void VarList(Node* node, struct table_item* func_item);
+struct field* ParamDec(Node* node);
+void CompSt(Node* node, struct type* return_type);
+void StmtList(Node* node, struct type* return_type);
+void Stmt(Node* node, struct type* return_type);
+void DefList(Node* node, struct table_item* struct_item);
+void Def(Node* node, struct table_item* struct_item);
+void DecList(Node* node, struct type* specifier,struct table_item* struct_item);
+void Dec(Node* node, struct type* specifier,struct table_item* struct_item);
+struct type* Exp(Node* node);
+void Args(Node* node, struct table_item* func_item);

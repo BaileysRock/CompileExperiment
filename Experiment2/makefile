@@ -65,27 +65,3 @@ test16: ./Code/parser ./TestCase/test16.cmm
 test17: ./Code/parser ./TestCase/test17.cmm
 	$(info >>>>>test17)
 	./Code/parser ./TestCase/test17.cmm
-
-test18: ./Code/parser ./TestCase/test18.cmm
-	$(info >>>>>test18)
-	./Code/parser ./TestCase/test18.cmm
-
-test19: ./Code/parser ./TestCase/test19.cmm
-	$(info >>>>>test19)
-	./Code/parser ./TestCase/test19.cmm
-
-test20: ./Code/parser ./TestCase/test20.cmm
-	$(info >>>>>test20)
-	./Code/parser ./TestCase/test20.cmm
-
-test21: ./Code/parser ./TestCase/test21.cmm
-	$(info >>>>>test21)
-	./Code/parser ./TestCase/test21.cmm
-
-test22: ./Code/parser ./TestCase/test22.cmm
-	$(info >>>>>test22)
-	./Code/parser ./TestCase/test22.cmm
-
-test23: ./Code/parser ./TestCase/test23.cmm
-	$(info >>>>>test23)
-	./Code/parser ./TestCase/test23.cmm

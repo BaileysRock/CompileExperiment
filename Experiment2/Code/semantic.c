@@ -22,7 +22,6 @@ void printError(enum error_type type, int line, char* msg) {
 
 void print_func_error(Node* node, struct table_item* func_item) {
     printf("Error type %d at Line %d: ", FUNC_AGRC_MISMATCH, node->lineNo);
-
     printf("Function \"%s(", func_item->field->value);
     struct field* field_temp = func_item->field;
     while (field_temp) {
@@ -30,17 +29,11 @@ void print_func_error(Node* node, struct table_item* func_item) {
         field_temp = field_temp->next;
     }
     printf(")\" is not applicable for arguments \"(");
-
     Node* args_node_temp = node;
     while (args_node_temp->childNode->brotherNode) {
         struct type* args_type_temp = Exp(args_node_temp->childNode);
         printKind(args_type_temp);
         printf(", ");
-
-        // args_node_temp->childNode->brotherNode
-        //                                   ^
-        //                                   |
-        //                                 COMMA
         args_node_temp =
             args_node_temp->childNode->brotherNode->brotherNode;
     }
@@ -211,8 +204,7 @@ void setFieldName(struct field* field, char* name) {
 }
 
 struct table_item* newTableItem(struct field* field) {
-    struct table_item* item =
-        (struct table_item*)malloc(sizeof(struct table_item));
+    struct table_item* item = (struct table_item*)malloc(sizeof(struct table_item));
 
     item->field = field;
     item->next  = NULL;
@@ -235,8 +227,8 @@ struct symbol_table* initTable() {
         (struct symbol_table*)malloc(sizeof(struct symbol_table));
 
     table->hash_array = (struct table_item**)malloc(sizeof(struct table_item*) *
-                                                    SYM_TABLE_SIZE);
-    for (int i = 0; i < SYM_TABLE_SIZE; i++) {
+                                                    SYMBOL_TABLE_SIZE);
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
         table->hash_array[i] = NULL;
     }
 
@@ -250,8 +242,8 @@ unsigned getHashCode(char* str) {
         hash = (hash << 2) + *str;
 
         unsigned i;
-        if ((i = hash & ~SYM_TABLE_SIZE))
-            hash = (hash ^ (i >> 12)) & SYM_TABLE_SIZE;
+        if ((i = hash & ~SYMBOL_TABLE_SIZE))
+            hash = (hash ^ (i >> 12)) & SYMBOL_TABLE_SIZE;
     }
 
     return hash;
@@ -330,14 +322,6 @@ void ExtDecList(Node* node, struct type* specifier) {
         }
 
         if (temp->childNode->brotherNode) {
-            // ExtDecList
-            //     |
-            //     v
-            //     VarDec COMMA ExtDecList
-            //     (temp)           |
-            //                      v
-            //                      VarDec COMMA ExtDecList
-            //                    (new temp)
             temp = temp->brotherNode->brotherNode->childNode;
         } else {
             break;
@@ -859,7 +843,8 @@ struct type* Exp(Node* node) {
 
                 if (!struct_type || struct_type->kind != STRUCTURE ||
                     !struct_type->u.structure.value) {
-                    // 报错，对非结构体使用 "." 运算符
+                    // 对非结构体使用 "." 运算符
+                    // 调用printError进行报错处理
                     printError(ILLEGAL_USE_DOT, lc->lineNo,
                                 "Illegal use of \".\".");
                 } else {
@@ -874,7 +859,7 @@ struct type* Exp(Node* node) {
                         struct_field = struct_field->next;
                     }
                     if (struct_field == NULL) {
-                        // 报错，没有可以匹配的域
+                        // 没有可以匹配的域
                         char msg[100] = {0};
                         sprintf(msg, "Non-existent field \"%s\".",
                                 struct_member->value);
@@ -895,7 +880,8 @@ struct type* Exp(Node* node) {
         struct type* return_type = NULL;
 
         if (!simgle_exp || simgle_exp->kind != BASIC) {
-            // 报错，数组，结构体运算
+            // 数组，结构体运算
+            // 调用printError进行报错处理
             printf("Error type %d at Line %d: %s.\n", 7, lc->lineNo,
                    "TYPE_MISMATCH_OP");
         } else {
@@ -991,14 +977,6 @@ void Args(Node* node, struct table_item* func_item) {
 
         argv = argv->next;
         if (temp->childNode->brotherNode) {
-            // (temp)
-            //  Args
-            //   |
-            //   v       (new temp)
-            //  Exp COMMA   Args
-            //               |
-            //               v
-            //              ...
             temp = temp->childNode->brotherNode->brotherNode;
         } else {
             break;

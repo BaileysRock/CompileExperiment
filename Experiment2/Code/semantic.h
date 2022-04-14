@@ -5,17 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-/// 定义符号表
+// 定义符号表
 struct symbol_table* table;
 
-/// 定义标识符类型
+// 定义标识符类型
 enum kind {
+    // 基础
     BASIC, 
-    // 数组类型
+    // 数组
     ARRAY,
-    // 结构体类型
+    // 结构体
     STRUCTURE, 
-    // 函数类型
+    // 函数
     FUNCTION   
 };
 
@@ -25,7 +26,7 @@ enum basic_type {
     FLOAT_TYPE 
 };
 
-/// 语义分析错误类型
+// 定义各类语义分析错误类型
 enum error_type {
     UNDEFINE_VAR = 1,     // 变量未定义
     UNDEFINE_FUNC,        // 函数未定义
@@ -46,84 +47,80 @@ enum error_type {
     UNDEFINE_STRUCT       // 结构体未定义
 };
 
-/// 类型
+// 类型
 struct type {
     // 标识符类型
     enum kind kind;
     union {
-        // 基本类型
+        // 基本
         enum basic_type basic;
-        // 数组类型
+        // 数组
         struct {
-            struct type* element_type; // 元素类型
+            struct type* element_type; // 数组类型
             int          size;         // 数组大小
         } array;
-
-        // 结构体类型
+        // 结构体
         struct {
-            char*         value;  // 结构体名
-            struct field* field; // 结构体各个字段链表
+            char*         value; // 结构体的名字
+            struct field* field; // 结构体各个字段指针
         } structure;
-
-        // 函数类型
+        // 函数
         struct {
             int           argc;        // 参数数量
-            struct field* argv;        // 参数链表
+            struct field* argv;        // 参数指针
             struct type*  return_type; // 返回类型
         } function;
     } u;
 };
 
-/// 域：带有自己的名字和类型的“类型”
+// 域：带有名字和类型的结构体
 struct field {
     char*         value; // 名字
-    struct type*  type; // 类型
-    struct field* next; // 下一个域
+    struct type*  type;  // 类型
+    struct field* next;  // 下一个域
 };
 
-/// 符号表项目
+// 符号表项目
 struct table_item {
-    struct field*      field; // 符号域（类型）信息
+    struct field*      field; // 符号域信息
     struct table_item* next;  // 相同哈希值的下一个项目
 };
 
-/// 符号表条目总数
-#define SYM_TABLE_SIZE 0x3fff
+// 符号表条目总数
+#define SYMBOL_TABLE_SIZE 0x3fff
 
-/// 符号表，本质上是一个哈希表，用于根据符号名称快速找到对应的符号表条目
+// 符号表，本实验中为哈希表
 struct symbol_table {
-    /// 一个符号表条目 item 在表中的索引位置的计算方法是：
-    /// hash_array[HASH(`name`)] -> `name` 对应的符号表条目
     struct table_item** hash_array;
 };
 
-/// 拷贝字符串 \p src
+// 拷贝字符串src
 char* copyStr(char* src);
 
-/// 打印错误信息
+// 打印错误信息
 void printError(enum error_type type, int line, char* msg);
 
-/// 打印类型
+// 打印类型
 void printKind(struct type* type);
 
-/// 递归进行语义分析
+// 递归进行语义分析
 void Traversal(Node* node);
 
-/// 根据标识符种类kind和其余参数新建一个新类型
+// 根据标识符种类kind和其余参数新建一个新类型
 struct type* newType(enum kind kind, ...);
 
-/// 拷贝类型src
+// 拷贝类型src
 struct type* copyType(struct type* src);
 
-/// 检查两个类型type1和type2是否相同
-/// BASIC: 检查是否同为 int 或 float
-/// ARRAY: 检查元素的类型
-/// STRUCTURE: 检查结构体名称
-/// FUNCTION: 规定函数一定不同
-/// 相同则返回 1；否则返回 0
+// 检查两个类型type1和type2是否相同
+// 若为BASIC: 检查是否同为 int 或 float
+// 若为ARRAY: 检查元素的类型
+// 若为STRUCT: 检查结构体名称
+// 若为FUNCTION: 规定函数一定不同
+// 相同则返回 1；否则返回 0
 int isTypeSame(struct type* type1, struct type* type2);
 
-/// 根据名称name和类型type新建一个域
+// 使用name和type新建一个域
 struct field* newField(char* name, struct type* type);
 
 /// 拷贝域src
@@ -135,24 +132,24 @@ void setFieldName(struct field* field, char* name);
 /// 根据域field创建一个新符号表条目
 struct table_item* newTableItem(struct field* field);
 
-/// 判断符号表条目 item 是否是结构体
-/// 如果是，则返回 1；否则返回 0
+// 判断符号表条目 item 是否是结构体
+// 若是，则返回 1
+// 否则返回 0
 int isStruct(struct table_item* item);
 
-/// 初始化符号表
+// 初始化符号表
 struct symbol_table* initTable();
 
-/// 计算字符串str的哈希值
+// 计算字符串str的哈希值
 unsigned getHashCode(char* str);
 
-/// 从符号表table中查找名称为name的符号条目指针。
-///
-/// 若找不到，则返回 NULL
+// 从符号表table中查找名称为name的符号条目指针。
+// 若找不到，则返回 NULL
 struct table_item* getTableItem(struct symbol_table* table, char* name);
 
-/// 检查item是否已经在符号表table中定义过。
-///
-/// 如果已经定义，返回 1；否则返回 0
+// 检查item是否已经在符号表table中定义过。
+// 如果已经定义，返回 1
+// 否则返回 0
 int isTableItemRedefined(struct symbol_table* table, struct table_item* item);
 
 /// 在符号表table 中插入新条目item
